@@ -3,7 +3,7 @@
 ## 实现效果
 模拟一个打鼓的页面。用户在键盘上按下 ASDFGHJKL 这几个键时，页面上与字母对应的按钮变大变亮，对应的鼓点声音响起来。
 
-- [在线demo](./index.html)
+- [在线demo](https://atrist.github.io/03webProject/js30/01-JavaScriptDrumKit/index.html)
 ## 关键要点
 1. 键盘事件
 2. 播放声音
