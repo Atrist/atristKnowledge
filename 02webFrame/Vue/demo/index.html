@@ -10,14 +10,45 @@
     <div id="app">
     <p>    {{ message    }}</p>
     <p>{{reversedMessage}}</p>
-    </div>
+    <template v-if="ok">
+
+        <h1>Title</h1>
+        <p>Paragraph 1</p>
+        <p>Paragraph 2</p>
+    </template>
+
+    <template v-if="Math.random() > 0.5">
+        Now you see me
+      </template>
+      <div v-else>
+        Now you don't
+      </div>
+      <div v-for="(value, name,inde) in object">
+        {{ inde }}.{{ name }}: {{ value }}
+      </div>
+      <div v-for="data in datas">
+        {{data.message}}
+      </div>
+
+
+</div>
+
 </body>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
 <script>
     var vm = new Vue({
         el:'#app',
         data:{
-            message:'Hello'
+            message:'Hello',
+            ok:false,
+            object: {
+      title: 'How to do lists in Vue',
+      author: 'Jane Doe',
+      publishedAt: '2016-04-10'
+    },
+            datas:[{message:'Foo'            },
+        {message:'Bar'}
+    ]
         },
         computed:{
             reversedMessage:function(){
