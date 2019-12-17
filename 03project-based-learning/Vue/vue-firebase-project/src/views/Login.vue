@@ -3,6 +3,7 @@
     <h3>Sign In</h3>
     <input type="text" v-model="email" placeholder="Email"><br>
     <input type="password" v-model="password" placeholder="Password"><br>
+    <textarea v-model="message" >asdasd</textarea>
     <button @click="login">Connection</button>
     <p>You don't have an account ? You can <router-link to="/sign-up">create one</router-link></p>
 </div>
@@ -14,7 +15,8 @@ export default {
     data(){
         return {
             email:'',
-            password:''
+            password:'',
+            message:'123asd'
         };
     },
     methods:{
