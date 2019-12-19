@@ -5,6 +5,7 @@
     <input type="password" v-model="password" placeholder="Password"><br>
     <button @click='signUp'> Sign Up</button>
     <span>or go back to<router-link to="/login">login</router-link>.</span>
+    <BaseInput>asdfasdf</BaseInput>
 </div>
 </template>
 <script>
