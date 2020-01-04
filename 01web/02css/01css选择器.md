@@ -2,7 +2,92 @@
 - [网址](https://www.w3school.com.cn/cssref/css_selectors.asp)
 
 # css选择的分类
+## 基本选择器
 
+选择器 | 例子  |  例子描述 
+-- | -- |--|--
+`.class` | .intro | 选择 class="intro" 的所有元素。
+`#id` | #firstname |	选择 id="firstname" 的所有元素。	
+`*`|	*|	选择所有元素。	
+`element` |	p	|选择所有 p 元素。	 
+`element,element` | div,p | 选择所有div元素和所有p元素
+`element element` | div p | 选择div元素内部的所有p元素
+`element>element` | div>p | 选择父元素为div的所有p元素
+`element+element` | div+p | 选择紧接在div元素之后的所有元素
+
+### 标签选择器
+使用 *  可畏所有元素设置样式
+```css
+*{
+    text-decoration：none;
+    color:#6c757d;
+}
+```
+根据标签为元素设置样式
+```css
+h1{
+    color:red;
+}
+```
+同时设置多个元素组合
+```css
+h1,h2{
+    color:red;
+}
+```
+元素在多个组件中存在
+```css
+h1,h2{
+    color:red;
+}
+h1,h3{
+    backgroud:#dcdcdc;
+}
+```
+
+### 类选择器
+类选择器是为了一类状态规则声明样式规则,下面是把文本居中定义为类样式
+```css
+.text-center{
+    text-align:center;
+}
+```
+```html
+<h1 class="text-center">文本居中</h1>
+<h2 class="text-center">文本居中</h2>
+```
+将类选择器指定为具体标签
+```css
+.help-block{
+    backgroud:red;
+}
+span.help-block{
+    font-size:12px;
+    color:#aaa;
+    backgroud:none;
+}
+```
+```html
+<span class="help-block">感谢访问</span>
+```
+### ID选择器
+为有id属性的元素设置样式
+```css
+#container{
+    backgroud:red;
+}
+```
+```html
+<h1 id="container">背景颜色为红色</h1>
+```
+
+## 结构选择器
+选择器 | 例子  |  例子描述 
+-- | -- |--|--
+`element element` | div p | 选择div元素内部的所有p元素
+`element>element` | div>p | 选择父元素为div的所有p元素
+`element+element` | div+p | 选择紧接在div元素之后的所有元素
+`element1~element2` | p~ul | 选择前面有p元素的每个ul元素
 
 # css选择器的权重
 
@@ -55,5 +140,6 @@ css列指示该属性是在哪个css版本中定义的。
 `:checked`|	input:checked	|选择每个被选中的 `<input>` 元素。	|3
 `:not(selector)`|	:not(p)	|选择非 `<p>` 元素的每个元素。	|3
 `::selection`	|::selection	|选择被用户选取的元素部分。	|3
+
 
 
