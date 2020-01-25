@@ -86,8 +86,94 @@ span.help-block{
 -- | -- |--|--
 `element element` | div p | 选择div元素内部的所有p元素
 `element>element` | div>p | 选择父元素为div的所有p元素
-`element+element` | div+p | 选择紧接在div元素之后的所有元素
+`element+element` | div+p | 选择紧接在div元素之后的p元素
 `element1~element2` | p~ul | 选择前面有p元素的每个ul元素
+
+### 后代选择器
+HTML中元素是以父子级、兄弟关系存在的。后代选择器指元素后的元素(不只是子元素，是后代元素)。
+```html
+<style>
+main article h2,main h1{
+    color:green;
+}
+</style>
+<main>
+<article>
+        <h2>atrist</h2>   <!--变绿色-->
+        <aside>
+            <h2>atrist.cn</h2> <!--变绿色-->
+        </aside>
+</article>
+ <h2>atrist</h2>
+ <h1 >atrist.cn</h1>        <!--变绿色-->
+</main>
+```
+### 子元素选择器
+子元素选择器中选择子元素，不包括孙级及以下元素
+```html
+<style>
+main article>h2{
+    color:green
+}
+</style>
+<main>
+	<article>
+		<h2>atrist1</h2>  <!--变绿色-->
+		<aside>
+			<h2>atrist2</h2>
+		</aside>
+	</article>
+	<h2>atrist3</h2>
+	<h1>atrist4</h1>
+</main>
+```
+### 紧邻兄弟元素 
+用于选择紧挨着的同级兄弟元素
+```html
+<style>
+main article+h2{
+    color:green;
+}
+</style>
+<main>
+    <article>          
+		<h2 >atrist1</h2>
+		<aside>
+			<h2>atrist2</h2>
+		</aside>
+	</article>
+	<h2 >atrist3</h2>   <!--变绿色-->
+	<h1>atrist4</h1>   
+</main>
+```
+### 后面兄弟元素
+用于选择后面的所有兄弟元素
+```html
+<style>
+main article~* {
+    color: green;
+}
+</style>
+<main>
+    <article>
+        <h2>atrist1</h2>
+        <aside>
+            <h2>atrist2</h2>
+        </aside>
+    </article>
+    <h2>atrist3</h2>    <!--变绿色-->
+    <h1>atrist4</h1>    <!--变绿色-->
+</main>
+```
+## 属性选择器
+根据属性来为元素设置样式也是常用的场景
+选择器 | 示例 | 描述
+--|--|--
+`[attribute]` | [target]| 选择带有target属性所有元素
+`[attribute=value]`| [title=flower] | 选择title属性为"flower"的所有元素
+`[attribute~=value]` | [title~=flower] | 选择title属性包含flower单词的所有元素
+`[attribute|=value]` | [lang|=en] | 选择lang属性以"en"开头的元素
+
 
 # css选择器的权重
 
