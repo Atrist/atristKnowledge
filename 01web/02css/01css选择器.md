@@ -173,59 +173,618 @@ main article~* {
 `[attribute=value]`| [title=flower] | 选择title属性为"flower"的所有元素
 `[attribute~=value]` | [title~=flower] | 选择title属性包含flower单词的所有元素
 `[attribute|=value]` | [lang|=en] | 选择lang属性以"en"开头的元素
+`[attribute*=value]`| a[src*="abc"] | 选择其src属性中包含"abc"子串的每个`<a>`元素
+`[attribute^=value]` | a[src^="https"] | 选择其src属性以"https"开头的所有`<a>`元素
+`[attribute$=value]` | a[src$=".pdf"] | 选择其src属性以".pdf"结尾的所有`<a>`元素
+
+### 为具有`class`属性的h1标签设置样式
+```html
+h1[class]{
+    color:red;
+}
+
+<h1 class="container">红色</h1>
+```
+### 约束多个属性
+```html
+h1[class][id]{
+    color:red;
+}
+<h1 class="container" id >多个属性红色</h1>
+```
+### 具体属性值设置样式
+```html
+a[href="http://www.baidu.com"]{
+    color:blue;
+}
+
+<a href="http://www.baidu.com">百度</a>
+<a>链接</a>
+```
+
+### 以指定值开头的元素
+```html
+h2[name^="Atrist"]{
+
+}
+<h2 name="Atrist">Atrist</h2>
+<h2 name="AtrCom">AtrCom</h2>
+```
+### 以指定值结束的元素
+```html
+h2[name$="Com"]{
+
+}
+<h2 name="Atrist">Atrist</h2>
+<h2 name="AtrCom">AtrCom</h2>
+```
+### 属性内部任何位置出现值的元素
+```html
+h2[name*="com"]{
+    color:red;
+}
+
+<h2 name="com">com</h2>
+<h2 name="Acvcom">com</h2>
+<h2 name="AcomADS">com</h2>
+```
+### 属性包含指定词汇的元素
+```html
+h2[name~="artist"]{
+    color:red;
+}
+
+<h2 name="artist art">com红色</h2>
+<h2 name="artistm m">com没有变化</h2>
+<h2 name="AcomADS">com没有变化</h2>
+```
+
+### 以指定值开头或以属性连接破折号的元素
+```html
+h2[name|="aaaa"] {
+    color: red;
+}
+...
+
+<h2 name="aaaa">houdunren.com</h2>
+<h2 name="aaaa-web">hdcms.com</h2>
+```
+
+## 伪类选择器
+为元素的不同状态或不确定存在的元素设置样式规则
+
+**状态** | **实例**| **说明**
+--|--|--
+:link|a:link|选择所有未被访问的链接
+:visited| a:visited|选择所有已被访问的链接
+:hover|a:hover|鼠标移动在元素上时
+:active|a:active|点击正在发生时
+:focus|input:focus|选择获得焦点的input元素
+:root|:root|选择文档的根元素即HTML
+:empty|p:empty|选择没有子元素的每个元素(包括文本节点)
+:first-child|p:first-child|选择属于父元素的第一个子元素的每个元素
+:last-child|p:last-child|选择属于其父元的最后一个子元素的每个元素
+:first-of-type|p:first-of-type|选择属于其父元素的首个元素的每个元素
+:last-of-type| p:last-of-type|选择属于其父元素的最后个元素的每个元素
+:only-of-type|p:only-of-type|选择属于其父元素唯一的元素的每个元素
+:only-child|p:only-child|选择属于其父元素的唯一子元素的每个元素
+:nth-child(n)|p:nth-child(2)|选择属于其父元素的第二个子元素的每个元素
+:nth-child(odd)|p:nth-child(odd)|选择属于其父元素的奇数元素
+:nth-child(even)|p:nth-child(even)|选择属于其父亲的偶数元素
+:nth-of-type(n)|p:nth-of-type(2)|选择属于其父元素的第二个元素的每个元素
+:nth-last-child(n)|p:nth-last-child(2)|选择属于其父元素的倒数第二个元素的每个元素
+:nth-last-of-type(n)|p:nth-last-of-type(2)|选择属于其父元素的倒数第二个元素的每个元素
+
+### 超链接伪类
+定义链接的不同状态
+```html
+a:link {
+    color: red
+}
+
+a:visited {
+    color: green
+}
+
+a:hover {
+    color: blue
+}
+
+a:active {
+    color: yellow
+}
+...
+
+<a href="https://www.atrist.com">Atrist</a>
+```
+不只是链接可以使用伪类，其他元素也可以使用。下面是对表单的点击与获取焦点状态的样式设置
+```html
+a:link {
+    color: red
+}
+
+a:visited {
+    color: green
+}
+
+a:hover {
+    color: blue
+}
+
+a:active {
+    color: yellow
+}
+...
+
+<a href="https://www.atrist.com">Atrist</a>
+```
+### :target
+用于控制具有锚点目标元素的样式
+```html
+div{
+    height:900px;
+
+}
+
+<a href="#atrst">atrist</a>
+<div></div>
+<div id="atrist">
+	后台内容管理系统
+</div>
+```
+
+### :root
+根元素选择伪类即选择html
+```tml
+:root{
+    font-size:100px;
+}
+```
+
+### :empty
+没有内容和空白的元素。下面第一个p标签会产生样式，第二个不会因为有空白内容
+```html
+:empty {
+    border: solid 2px red;
+}
 
 
-# css选择器的权重
+<p></p>
+<p> </p>
+```
+
+### 结构伪类
+下面来通过结构伪类选择器选择树状结构中的标签元素
+### :first-child
+选择元素中`span`标签并且是第一个
+```html
+article span:first-child {
+    color: red;
+}
+...
+
+<article>
+	<span>atrist</span>
+	<aside>
+		<span>atrist.com</span>
+		<span>com.atrist</span>
+	</aside>
+</article>
+```
+
+### :first-of-type
+选择类型是`span`的第一个元素
+```html
+article span:first-of-type {
+    color: red;
+}
+...
+
+<article>
+	<span>atrist.com</span>
+	<aside>
+		<strong>com</strong>
+		<span>atrist</span>
+	</aside>
+</article>
+```
+### :last-child
+选择元素中`span`标签并且是最后一个
+```html
+article span:last-child {
+    color: red;
+}
+<article>
+  <span>atrist.com</span>
+  <aside>
+    <strong>atrist.com</span>
+  </aside>
+  <span>atrist.com</span>
+</article>
+```
+### :last-of-type
+选择类型为`span`的最后一个元素
+```html
+article span:last-of-type {
+    color: red;
+}
+...
+
+<article>
+  <span>atrist.com</span>
+  <aside>
+  	<span>atrist.com</span>
+  	<strong>atrist.com</strong>
+  </aside>
+  <span>atrist.com</span>
+</article>
+```
+### :only-child
+选择是唯一子元素的`span`标签
+```html
+article span:only-child {
+    color: red;
+}
+...
+
+<article>
+	<span>houdunren.com</span>
+	<aside>
+		<span>houdunwang.com</span>
+	</aside>
+</article>
+```
+### :only-of-type
+
+```html
+<style>
+article span:only-of-type {
+    color: red;
+}
+</style>
+
+<article>
+	<span>atrist.com</span>
+	<aside>
+		<span>atrist.com</span>
+		<span>atrist.com</span>
+	</aside>
+</article>
+```
+### nth-child(n)
+选择第二个元素并且是span标签的
+```html
+article span:nth-child(2) {
+    color: red;
+}
+...
+
+<article>
+  <span>houdunren.com</span>
+  <aside>
+    <span>houdunwang.com</span>
+    <span>hdcms.com</span>
+  </aside>
+  <span>hdphp.com</span>
+</article>
+```
+### nth-of-type(n)
+选择第二个`span`元素，不管中间的其他元素
+```html
+article span:nth-of-child(2) {
+    color: red;
+}
+
+<article>
+  <span>Atrist.com</span>
+  <aside>
+    <span>Atrist</span>
+    <span>Atrist</span>
+  </aside>
+  <span>Atrist</span>
+</article>
+```
+### 计算数量
+n为0/1/2/3……,下面是隔列变色
+```html
+table tr>td:nth-child(2n+1) {
+    background: green;
+    color: white;
+}
+<table border="1">
+  <tr>
+    <td>houdunren.com</td>
+    <td>hdcms.com</td>
+    <td>后盾人</td>
+    <td>houdunwang.com</td>
+    <td>hdcms</td>
+  </tr>
+</table>
+```
+从第三个开始设置样式
+```html
+<style>
+table tr>td:nth-child(n+3) {
+    background: rgb(128, 35, 2);
+    color: white;
+}
+</style>
+<table border="1">
+  <tr>
+    <td>houdunren.com</td>
+    <td>hdcms.com</td>
+    <td>后盾人</td>
+    <td>houdunwang.com</td>
+    <td>hdcms</td>
+  </tr>
+</table>
+```
+设置前三个元素
+```html
+<style>
+table tr>td:nth-child(-n+3) {
+    background: rgb(128, 35, 2);
+    color: white;
+}
+</style>
+```
+### 奇数元素
+选择奇数单元格
+```html
+<style>
+table tr>td:nth-child(odd) {
+    background: green;
+    color: white;
+}
+</style>
+
+<table border="1">
+  <tr>
+    <td>houdunren.com</td>
+    <td>hdcms.com</td>
+    <td>后盾人</td>
+    <td>houdunwang.com</td>
+    <td>hdcms</td>
+  </tr>
+</table>
+```
+### 偶数元素
+选择偶数单元格
+```html
+<style>
+table tr>td:nth-child(even) {
+    background: green;
+    color: white;
+}
+</style>
+
+<table border="1">
+  <tr>
+    <td>houdunren.com</td>
+    <td>hdcms.com</td>
+    <td>后盾人</td>
+    <td>houdunwang.com</td>
+    <td>hdcms</td>
+  </tr>
+</table>
+```
+### :nth-last-child(n)
+从最后一个元素开始获取
+```html
+<style>
+table tr>td:nth-last-child(2n+1){
+    background: green;
+    color: white;
+}
+</style>
+
+<table border="1">
+  <tr>
+    <td>houdunren.com</td>
+    <td>hdcms.com</td>
+    <td>后盾人</td>
+    <td>houdunwang.com</td>
+    <td>hdcms</td>
+  </tr>
+</table>
+```
+取最后两个元素
+```css
+table tr>td:nth-last-child(-n+2){
+    background:green;
+    color:white;
+}
+```
+### :nth-last-of-type(n)
+从最后一个元素开始选择`span`标签
+```html
+<style>
+article span:nth-last-of-type(1) {
+    background: red;
+    color: white;
+}
+</style>
+
+<article>
+  <aside>
+  	<span>houdunren.com</span>
+  	<span>houdunwang.com</span>
+  	<strong>hdcms.com</strong>
+  </aside>
+	<span>hdphp.com</span>
+</article>
+```
+### :not(selector)
+排除第一个li元素
+```html
+<style>
+ul li:not(:nth-child(1)) {
+    background: red;
+}
+</style>
+
+<ul>
+  <li>houdunren.com</li>
+  <li>hdcms.com</li>
+  <li>后盾人</li>
+</ul>
+```
+## 表单伪类
+选择器|示例|说明
+--|--|--
+:enabled|input:enabled|选择每个启用的input元素
+:disabled|input:disabled|选择每个禁用的input元素
+:checked|input:checked|选择每个被选中的input元素
+:required|input:required|包含`required`属性的元素
+:optional|input:optional|不包含`required`属性的元素
+:valid|input:vaild|验证通过的表单元素
+:invalid|input:invalid|验证不通过的表单元素
+### 表单属性样式
+```html
+input:enabled {
+    background: red;
+}
+
+input:disabled {
+    background: #dddddd;
+}
+
+input:checked+label{
+    color: green;
+}
+...
+
+<input type="text" disabled>
+<input type="text" name="info">
+
+<input type="radio" name="sex" checked id="boy">
+<label for="boy">男</label>
+<input type="radio" name="sex" checked id="girl">
+<label for="girl">女</label>
+```
+### 表单必选样式
+```html
+<style>
+input:required {
+    border: solid 2px blue;
+}
+
+input:optional {
+	background: #dcdcdc; 
+	border: none;
+}
+</style>
 
 
+<input type="text" name="title" required>
+<input type="text" name="name">
+```
 
-css列指示该属性是在哪个css版本中定义的。
-选择器 | 例子  |  例子描述 | css
--- | -- |--|--
-`.class` | .intro | 选择 class="intro" 的所有元素。| 1
-`#id` | 	`#firstname` |	选择 id="firstname" 的所有元素。	| 1
-`*`|	`*`|	选择所有元素。	|2
-`element` |	`p`	|选择所有 `<p>` 元素。	 | 1
-`element,element`|	div,p	| 选择所有 `<div>` 元素和所有 `<p>` 元素。	|1
-`element element`	|div p	|选择 `<div>` 元素内部的所有 `<p>` 元素。	|1
-`element>element`|	div>p	|选择父元素为 `<div>` 元素的所有 `<p>` 元素。  |2
-`element+element`|	div+p	|选择紧接在 `<div>` 元素之后的所有 `<p>` 元素。|	2
-`[attribute]`	| [target]	|选择带有 target 属性所有元素。	|2
-`[attribute=value]`	|[target=_blank]	|选择 target="_blank" 的所有元素。	|2
-`[attribute~=value]`|	[title~=flower]	|选择 title 属性包含单词 "flower" 的所有元素。	|2
-`[attribute|=value]`	|[lang|=en]	|选择 lang 属性值以 "en" 开头的所有元素。	|2
-`:link`	|a:link	|选择所有未被访问的链接。	|1
-`:visited`	|a:visited	|选择所有已被访问的链接。	|1
-`:active`	|a:active	|选择活动链接。	|1
-`:hover`	|a:hover	|选择鼠标指针位于其上的链接。	|1
-`:focus`	|input:focus	|选择获得焦点的 input 元素。	|2
-`:first-letter`	|p:first-letter	|选择每个 `<p>` 元素的首字母。	|1
-`:first-line`	|p:first-line	|选择每个 `<p>` 元素的首行。	|1
-`:first-child`	|p:first-child	|选择属于父元素的第一个子元素的每个 `<p>` 元素。	|2
-`:before`	|p:before	|在每个 `<p>` 元素的内容之前插入内容。	|2
-`:after`	|p:after	|在每个 `<p>` 元素的内容之后插入内容。	|2
-`:lang(language)`	|p:lang(it)	|选择带有以 "it" 开头的 lang 属性值的每个 `<p>` 元素。	|2
-`element1~element2`	|p~ul	|选择前面有 `<p>` 元素的每个 `<ul>` 元素。	|3
-`[attribute^=value]`|	a[src^="https"]	|选择其 src 属性值以 "https" 开头的每个 `<a>` 元素。	|3
-`[attribute$=value]`|	a[src$=".pdf"]	|选择其 src 属性以 ".pdf" 结尾的所有 `<a>` 元素。	|3
-`[attribute*=value]`	|a[src*="abc"]	|选择其 src 属性中包含 "abc" 子串的每个 `<a>` 元素。	|3
-`:first-of-type`|	p:first-of-type	|选择属于其父元素的首个 `<p>` 元素的每个 `<p>` 元素。	|3
-`:last-of-type`	|p:last-of-type	|选择属于其父元素的最后 `<p>` 元素的每个 `<p>` 元素。	|3
-`:only-of-type`	|p:only-of-type	|选择属于其父元素唯一的 `<p>` 元素的每个 `<p>` 元素。	|3
-`:only-child`	|p:only-child	|选择属于其父元素的唯一子元素的每个 `<p>` 元素。	|3
-`:nth-child(n)`	|p:nth-child(2)	|选择属于其父元素的第二个子元素的每个 `<p>` 元素。	|3
-`:nth-last-child(n)`	|p:nth-last-child(2)	|同上，从最后一个子元素开始计数。	|3
-`:nth-of-type(n)`	|p:nth-of-type(2)	|选择属于其父元素第二个 `<p>` 元素的每个 `<p>` 元素。	|3
-`:nth-last-of-type(n)`	|p:nth-last-of-type(2)	|同上，但是从最后一个子元素开始计数。	|3
-`:last-child`	|p:last-child	|选择属于其父元素最后一个子元素每个 `<p>` 元素。|	3
-`:root`	|:root	|选择文档的根元素。	|3
-`:empty`|	p:empty	|选择没有子元素的每个 `<p>` 元素（包括文本节点）。	|3
-`:target`|	#news:target	|选择当前活动的 #news 元素。	|3
-`:enabled`|	input:enabled	|选择每个启用的 `<input>` 元素。	|3
-`:disabled`|	input:disabled|	选择每个禁用的 `<input>` 元素	|3
-`:checked`|	input:checked	|选择每个被选中的 `<input>` 元素。	|3
-`:not(selector)`|	:not(p)	|选择非 `<p>` 元素的每个元素。	|3
-`::selection`	|::selection	|选择被用户选取的元素部分。	|3
+### 表单验证样式
+```html
+input:valid {
+    border: solid 1px green;
+}
 
+input:invalid {
+    border: solid 1px red;
+}
+...
 
+<form>
+<input type="email">
+<button>保存</button>
+</form>
+```
+
+### 字符伪类
+状态|示例|说明
+--|--|--
+::first-letter|p::first-letter|选择每个元素的首字母
+::first-line|p::first-line|选择每个元素的首行
+::before|p::before|在每个元素的内容之前插入内容
+::after|p::after|在每个元素的内容之后插入内容
+
+### 首字母大写
+```html
+<style>
+p::first-letter {
+    font-size: 20px;
+}
+<p>
+	后盾人不断更新视频教程
+</p>
+</style>
+```
+### 段落首行处理
+```html
+<style>
+p::first-letter {
+    font-size: 30px;
+}
+</style>
+<p>
+	后盾人不断更新视频教程
+</p>
+```
+
+### 在元素前添加
+```html
+<style>
+span::before {
+    content: '⇰';
+    color: red;
+}
+span::after {
+    content: '⟲';
+    color: green;
+}
+</style>
+
+<span>后盾人</span>
+```
+### 搜索框示例
+```html
+<style>
+div {
+    border: solid 1px #ddd;
+    width: 150px;
+}
+
+div>input[type="text"] {
+    border: none;
+    outline: none;
+}
+
+div>input[type="text"]+span:after {
+    content: "\21AA";
+    font-size: 14px;
+    cursor: pointer;
+}
+</style>
+
+<div>
+	<input type="text"><span></span>
+</div>
+```
+
+### 添加属性内容
+```html
+h2::before {
+	content: attr(title);
+}
+...
+
+<h2 title="后盾人">houdunren.com</h2>
+```
+# CSS元素权重
+
+## 权重应用
+规则|粒度
+--|--|--
+ID|0100
+class,类属性值|0010
+标签，伪元素|0001
+*|0000
+行内样式|1000
 
