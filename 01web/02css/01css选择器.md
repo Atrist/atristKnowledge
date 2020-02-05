@@ -788,3 +788,37 @@ class,类属性值|0010
 *|0000
 行内样式|1000
 
+# 继承规则
+子元素可以继承父元素设置的样式
+- 继承的并不是全部样式，比如边框，高度等并不会继承
+- 继承的规则没有权重
+```html
+<style>
+  article {
+    color: red;
+    border: solid 1px #ddd;
+  }
+</style>
+...
+
+<article>
+	<h2>hdcms <span>内容管理系统</span></h2>
+</article>
+```
+### 通配符问题
+```html
+<style>
+  * {
+  	color: red;
+  }
+
+  h2 {
+  	color: blue;
+  }
+</style>
+
+<article>
+	<h2>hdcms <span>内容管理系统</span></h2>
+</article>
+```
+h2 中的`span`并没有继承 `h2` 的颜色，就是因为继承没有权重。而使用了 `*` 权重为0的规则。
