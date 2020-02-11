@@ -10,55 +10,62 @@
 
 
     <style>
-        body {
-            padding: 80px;
+        * {
+          padding: 0;
+          margin: 0;
         }
+        main {
+          width: 600px;
+          padding: 100px;
+          margin: 0 auto;
+        }
+        main article {
+          width: 150px;
+          position: relative;
+          cursor: pointer;
+          font-size: 14px;
+          color: #555;
+        }
+        main article:hover div:nth-of-type(1) {
+          border-bottom: none;
+        }
+        main article:hover div:nth-of-type(2) {
+          display: block;
+        }
+        main article div {
+          box-sizing: border-box;
+          height: 50px;
+          line-height: 3.5em;
+          text-align: center;
+          border: solid 2px blueviolet;
+          background: white;
+        }
+        main article div:nth-of-type(1) {
+          position: relative;
+          z-index: 2;
+        }
+        main article div:nth-of-type(2) {
+          display: none;
+          position: absolute;
+          right: 0;
+          top: 48px;
+          left: -150px;
+          z-index: 1;
+        }
+      </style>
 
-        .field {
-            position: relative;
-        }
-
-        input {
-            border: none;
-            outline: none;
-        }
-
-        .field::after {
-            content: '';
-            background: linear-gradient(to right, white, red, green, blue, white);
-            height: 30px;
-            position: relative;
-            width: 100%;
-            height: 1px;
-            display: block;
-            left: 0px;
-            right: 0px;
-        }
-
-        .field:hover::before {
-            content: attr(data-placeholder);
-            position: absolute;
-            top: -20px;
-            left: 0px;
-            color: #555;
-            font-size: 12px;
-        }
-    </style>
 
 
 </head>
 
 <body>
-
-    <div class="field" data-placeholder="请输入少于100字的标题">
-        <input type="text" id="name">asdasd
-    </div>
-    <div class="field" data-placeholder="请输入少于100字的标题">
-        <input type="text" id="name">asdasd
-    </div>
-    <div class="field" data-placeholder="请输入少于100字的标题">
-        <input type="text" id="name">asdasd
-    </div>
+      
+      <main>
+          <article>
+              <div>我的购物车</div>
+              <div>购物车中暂无产品</div>
+          </article>
+      </main>
 </body>
 
 </html>
