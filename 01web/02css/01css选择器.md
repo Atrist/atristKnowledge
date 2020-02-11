@@ -794,6 +794,125 @@ class,类属性值|0010
 *|0000
 行内样式|1000
 
+**下面是ID权限大于CLASS的示例**
+<style>
+.color{
+    color:red;
+}
+#hot{
+    color:green;
+}
+</style>
+<h2 class="color" id="hot">ID为绿，类为红</h2>
+
+```html
+<style>
+  .color {
+  	color: red;
+  }
+
+  #hot {
+  	color: green;
+  }
+</style>
+    
+<h2 class="color" id="hot">HDCMS</h2>
+```
+
+## 属性权重的示例
+<style>
+  /* 权重:0021 */
+  h2[class="color1"][id] {
+		color: red;
+  }
+
+  /* 权重:0012 */
+  article h2[class="color"] {
+  	color: blue;
+  }
+</style>
+
+<article>
+	<h2 class="color1" id="hot1">HDCMS</h2>
+</article>
+
+
+```html
+<style>
+  /* 权重:0021 */
+  h2[class="color1"][id] {
+		color: red;
+  }
+
+  /* 权重:0012 */
+  article h2[class="color1"] {
+  	color: blue;
+  }
+</style>
+
+<article>
+	<h2 class="color" id="hot">HDCMS</h2>
+</article>
+```
+## 行级优先级最高
+<style>
+  /* 权重:0012 */
+  article h2[class="color"] {
+  	color: blue;
+  }
+
+  #hot {
+  	color: black;
+  }
+</style>
+
+<h2 class="color" id="hot" style="color:green;">HDCMS</h2>
+
+```html
+<style>
+  /* 权重:0012 */
+  article h2[class="color"] {
+  	color: blue;
+  }
+
+  #hot {
+  	color: black;
+  }
+</style>
+
+<h2 class="color" id="hot" style="color:green;">HDCMS</h2>
+```
+
+# 强制优先级
+有时在规则冲突时，为了让某个规则强制有效可以使用 !important。
+<style>
+  h2 {
+ 	 color: red !important;
+  }
+
+  h2 {
+ 	 color: green;
+  }
+</style>
+
+<h2>HDCMS</h2>
+
+
+```html
+<style>
+  h2 {
+ 	 color: red !important;
+  }
+
+  h2 {
+ 	 color: green;
+  }
+</style>
+
+<h2>HDCMS</h2>
+```
+**两条规则权限一样，默认应用第二个规则，但第一个规则使用了!important 提升了权限，所以被应用。**
+
 # 继承规则
 子元素可以继承父元素设置的样式
 - 继承的并不是全部样式，比如边框，高度等并不会继承
