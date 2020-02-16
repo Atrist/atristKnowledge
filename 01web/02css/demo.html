@@ -1,72 +1,36 @@
 <style>
-    * {
-        padding: 0;
-        margin: 0;
-    }
-
-    body {
-        padding-left: 50px;
-        padding-top: 15px;
-    }
-
     article {
-        border: solid 5px silver;
-        width: 400px;
-        height: 400px;
-        padding: 10px;
-        display: flex;
-        flex-direction: column;
-
+        width: 100vw;
+        height: 100vh;
+        display: grid;
+        grid-template-rows: 80px 1fr 50px;
+        grid-template-columns: 80 1fr;
+        grid-template-areas: "header header header"
+            "nav main main"
+            "footer footer footer";
     }
 
-    article section {
-        order: 1;
-        flex: 1 0 100px;
-        padding: 10px;
+    div {
         background: blueviolet;
         background-clip: content-box;
-        display: flex;
-        flex-direction: column;
-        text-align: center;
+        border: solid 1px blueviolet;
+        padding: 10px;
+        box-sizing: border-box;
         color: white;
+        font-size: 25px;
     }
 
-    article section div {
-        flex: 1;
+    div:nth-child(1) {
+        grid-area: header-start/nav-start/main-end/main-end;
     }
 
-    article section div {
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-    }
-
-    article section span {
-        flex: 0;
-        background: #000;
-        padding: 20px;
-        cursor: pointer;
+    div:nth-child(2) {
+        grid-area: footer-start/footer-start/footer-end/footer-end;
     }
 </style>
+...
 
 <article>
-    <section>
-        <div>houdunren.com</div>
-        <span onclick="up(this)">up</span>
-    </section>
-    <section>
-        <div>hdcms.com</div>
-        <span onclick="up(this)">up</span>
-    </section>
+	<div></div>
+	<div></div>
 </article>
-
-<script>
-    function up(el) {
-        el.parentElement.style.order = getOrder(el.parentElement) * 1 - 1;
-        console.log(getOrder(el.parentElement))
-    }
-
-    function getOrder(el) {
-        return getComputedStyle(el, null).order;
-    }
-</script>
