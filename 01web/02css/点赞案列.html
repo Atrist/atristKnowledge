@@ -1,0 +1,53 @@
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src='https://code.jquery.com/jquery-3.3.1.slim.min.js'></script>
+<style>
+    body {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #ecf0f1;
+    }
+
+    div {
+        position: relative;
+        width: 100px;
+        height: 100px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    div i.fa {
+        font-size: 100px;
+        position: absolute;
+        transition: all .5s;
+        color: #ddd;
+    }
+
+    div.heart i.fa {
+        font-size: 400px;
+        color: #e74c3c;
+        opacity: 0;
+    }
+
+    div.heart i.fa:nth-child(2) {
+        font-size: 80px;
+        color: #e74c3c;
+        opacity: 1;
+    }
+</style>
+
+<body>
+    <div onclick="heart()">
+        <i class="fa fa-heart" aria-hidden="true"></i>
+        <i class="fa fa-heart" aria-hidden="true"></i>
+    </div>
+    <script>
+        function heart() {
+            $("div").toggleClass('heart');
+        }
+    </script>
+</body>
