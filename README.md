@@ -1,10 +1,8 @@
 # Web
 - web的笔记整理
 # 大概目录
-
-- [html简介]("./01html/0.简介.md")
-- [htmlhead标签]("./01html/1.head的内容.md")
-- [htmlbody标签]("./01html/2.body的内容.md")
+1. [HTML的简介](./01web/01html/00简介.md)
+2. [css](./01web/02css/00简介.md)
 
 
 ## JS30
