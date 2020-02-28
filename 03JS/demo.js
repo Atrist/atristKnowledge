@@ -1,11 +1,7 @@
-let info = {
-  name: "后盾人",
-  url: "houdunren.com"
-};
-for (const key in info) {
-  if (info.hasOwnProperty(key)) {
-      console.log(key)
-    console.log(info[key]);
-  }
+
+const hd = ["hdcms", "houdunren"];
+
+for (const [key, value] of hd.entries()) {
+  console.log(key, value); //这样就可以遍历了
 }
 
