@@ -1,5 +1,13 @@
-let hd = {};
-let parent = { name: "parent" };
-Object.setPrototypeOf(hd, parent);
+let user = {
+  show() {
+    return this.name;
+  }
+};
+let hd = Object.create(user, {
+  name: {
+    value: "后盾人"
+  }
+});
 console.log(hd);
-console.log(Object.getPrototypeOf(hd));
+console.log(hd.show());
+console.log(hd.name);
