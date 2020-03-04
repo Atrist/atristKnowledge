@@ -1,0 +1,15 @@
+<body>
+    <button message="后盾人">button</button>
+    <button message="hdcms">button</button>
+</body>
+<script>
+    function show() {
+        alert(this.getAttribute('message'));
+    }
+    let bts = document.getElementsByTagName('button');
+    for (let i = 0; i < bts.length; i++) {
+        bts[i].addEventListener('click', () => show.call(bts[i]));
+    }
+</script>
+
+

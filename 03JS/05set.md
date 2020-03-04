@@ -202,4 +202,5 @@ console.log(hd); //WeakSet {Array(1)}
 setTimeout(() => {
   console.log(hd); //WeakSet {}
 }, 1000);
+
 ```
