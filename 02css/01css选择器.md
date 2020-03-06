@@ -5,7 +5,7 @@
 ## 基本选择器
 
 选择器 | 例子  |  例子描述 
--- | -- |--|--
+--- | --- | ---|---
 `.class` | .intro | 选择 class="intro" 的所有元素。
 `#id` | #firstname |	选择 id="firstname" 的所有元素。	
 `*`|	*|	选择所有元素。	
@@ -15,8 +15,9 @@
 `element>element` | div>p | 选择父元素为div的所有p元素
 `element+element` | div+p | 选择紧接在div元素之后的所有元素
 
+
 ### 标签选择器
-使用 *  可畏所有元素设置样式
+使用 *  可为所有元素设置样式
 ```css
 *{
     text-decoration：none;
@@ -83,7 +84,7 @@ span.help-block{
 
 ## 结构选择器
 选择器 | 例子  |  例子描述 
--- | -- |--|--
+--- | --- |---|---
 `element element` | div p | 选择div元素内部的所有p元素
 `element>element` | div>p | 选择父元素为div的所有p元素
 `element+element` | div+p | 选择紧接在div元素之后的p元素
@@ -168,7 +169,7 @@ main article~* {
 ## 属性选择器
 根据属性来为元素设置样式也是常用的场景
 选择器 | 示例 | 描述
---|--|--
+---|---|---
 `[attribute]` | [target]| 选择带有target属性所有元素
 `[attribute=value]`| [title=flower] | 选择title属性为"flower"的所有元素
 `[attribute~=value]` | [title~=flower] | 选择title属性包含flower单词的所有元素
@@ -179,10 +180,11 @@ main article~* {
 
 ### 为具有`class`属性的h1标签设置样式
 ```html
+<style>
 h1[class]{
     color:red;
 }
-
+</style>
 <h1 class="container">红色</h1>
 ```
 ### 约束多个属性
@@ -194,46 +196,53 @@ h1[class][id]{
 ```
 ### 具体属性值设置样式
 ```html
+<style>
 a[href="http://www.baidu.com"]{
     color:blue;
 }
-
+</style>
 <a href="http://www.baidu.com">百度</a>
 <a>链接</a>
 ```
 
 ### 以指定值开头的元素
 ```html
+<style>
 h2[name^="Atrist"]{
-
+    color:blue;
 }
+</style>
 <h2 name="Atrist">Atrist</h2>
 <h2 name="AtrCom">AtrCom</h2>
 ```
 ### 以指定值结束的元素
 ```html
+<style>
 h2[name$="Com"]{
-
+    color:blue;
 }
+</style>
 <h2 name="Atrist">Atrist</h2>
 <h2 name="AtrCom">AtrCom</h2>
 ```
 ### 属性内部任何位置出现值的元素
 ```html
+<style>
 h2[name*="com"]{
     color:red;
 }
-
+</style>
 <h2 name="com">com</h2>
 <h2 name="Acvcom">com</h2>
 <h2 name="AcomADS">com</h2>
 ```
 ### 属性包含指定词汇的元素
 ```html
+<style>
 h2[name~="artist"]{
     color:red;
 }
-
+</style>
 <h2 name="artist art">com红色</h2>
 <h2 name="artistm m">com没有变化</h2>
 <h2 name="AcomADS">com没有变化</h2>
@@ -241,10 +250,11 @@ h2[name~="artist"]{
 
 ### 以指定值开头或以属性连接破折号的元素
 ```html
+<style>
 h2[name|="aaaa"] {
     color: red;
 }
-...
+</style>
 
 <h2 name="aaaa">houdunren.com</h2>
 <h2 name="aaaa-web">hdcms.com</h2>
@@ -253,8 +263,8 @@ h2[name|="aaaa"] {
 ## 伪类选择器
 为元素的不同状态或不确定存在的元素设置样式规则
 
-**状态** | **实例**| **说明**
---|--|--
+状态 | 示例 | 说明
+---|---|---
 :link|a:link|选择所有未被访问的链接
 :visited| a:visited|选择所有已被访问的链接
 :hover|a:hover|鼠标移动在元素上时
@@ -631,7 +641,7 @@ ul li:not(:nth-child(1)) {
 ```
 ## 表单伪类
 选择器|示例|说明
---|--|--
+---|---|---
 :enabled|input:enabled|选择每个启用的input元素
 :disabled|input:disabled|选择每个禁用的input元素
 :checked|input:checked|选择每个被选中的input元素
@@ -639,6 +649,7 @@ ul li:not(:nth-child(1)) {
 :optional|input:optional|不包含`required`属性的元素
 :valid|input:vaild|验证通过的表单元素
 :invalid|input:invalid|验证不通过的表单元素
+
 ### 表单属性样式
 ```html
 input:enabled {
@@ -682,6 +693,7 @@ input:optional {
 
 ### 表单验证样式
 ```html
+<style>
 input:valid {
     border: solid 1px green;
 }
@@ -689,7 +701,7 @@ input:valid {
 input:invalid {
     border: solid 1px red;
 }
-...
+</style>
 
 <form>
 <input type="email">
@@ -699,7 +711,7 @@ input:invalid {
 
 ### 字符伪类
 状态|示例|说明
---|--|--
+---|---|---
 ::first-letter|p::first-letter|选择每个元素的首字母
 ::first-line|p::first-line|选择每个元素的首行
 ::before|p::before|在每个元素的内容之前插入内容
@@ -787,7 +799,7 @@ h2::before {
 
 ## 权重应用
 规则|粒度
---|--|--
+---|---|---
 ID|0100
 class,类属性值|0010
 标签，伪元素|0001
@@ -795,15 +807,16 @@ class,类属性值|0010
 行内样式|1000
 
 **下面是ID权限大于CLASS的示例**
+
 <style>
-.color{
+.color1{
     color:red;
 }
 #hot{
     color:green;
 }
 </style>
-<h2 class="color" id="hot">ID为绿，类为红</h2>
+<h2 class="color1" id="hot">ID为绿，类为红</h2>
 
 ```html
 <style>
@@ -886,16 +899,16 @@ class,类属性值|0010
 # 强制优先级
 有时在规则冲突时，为了让某个规则强制有效可以使用 !important。
 <style>
-  h2 {
+  .h2 {
  	 color: red !important;
   }
 
-  h2 {
+  .h2 {
  	 color: green;
   }
 </style>
 
-<h2>HDCMS</h2>
+<h2 class="h2">HDCMS</h2>
 
 
 ```html
