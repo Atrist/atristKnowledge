@@ -1,15 +1,31 @@
 <body>
-    <button message="后盾人">button</button>
-    <button message="hdcms">button</button>
+    <style>
+        body {
+            padding: 30px;
+        }
+
+        #hd {
+            height: 30px;
+            background: yellowgreen;
+            width: 0;
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+    <div id="hd"></div>
 </body>
+
 <script>
-    function show() {
-        alert(this.getAttribute('message'));
+    function view() {
+        let i = 0;
+        (function handle() {
+            hd.innerHTML = i + "%";
+            hd.style.width = i + "%";
+            if (i++ < 100) {
+                setTimeout(handle, 2000);
+            }
+        })();
     }
-    let bts = document.getElementsByTagName('button');
-    for (let i = 0; i < bts.length; i++) {
-        bts[i].addEventListener('click', () => show.call(bts[i]));
-    }
+    view();
+    console.log("定时器开始了...");
 </script>
-
-

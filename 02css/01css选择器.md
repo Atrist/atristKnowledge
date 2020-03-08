@@ -84,7 +84,7 @@ span.help-block{
 
 ## 结构选择器
 选择器 | 例子  |  例子描述 
---- | --- |---|---
+--- | --- |---
 `element element` | div p | 选择div元素内部的所有p元素
 `element>element` | div>p | 选择父元素为div的所有p元素
 `element+element` | div+p | 选择紧接在div元素之后的p元素
@@ -652,6 +652,7 @@ ul li:not(:nth-child(1)) {
 
 ### 表单属性样式
 ```html
+<style>
 input:enabled {
     background: red;
 }
@@ -663,7 +664,7 @@ input:disabled {
 input:checked+label{
     color: green;
 }
-...
+</style>
 
 <input type="text" disabled>
 <input type="text" name="info">
@@ -799,7 +800,7 @@ h2::before {
 
 ## 权重应用
 规则|粒度
----|---|---
+---|--
 ID|0100
 class,类属性值|0010
 标签，伪元素|0001

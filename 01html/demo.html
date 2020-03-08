@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>文件读取实例</title>
+    <style>
+        .showDiv {
+            width: 300px;
+            min-height: 50px;
+            border: 1px solid black;
+            padding: 10px;
+            margin-top: 10px;
+        }
+
+        img {
+            width: 300px;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="file" class="file" multiple>
+    <button>上传文件</button>
+    <div class="showDiv"></div>
+    <img>
+
+    <script>
+        var fileInput = document.querySelector('.file');
+        var btn = document.querySelector('button');
+        var showDIv = document.querySelector('.showDiv');
+        var img = document.querySelector('img');
+        // 
+        btn.onclick = function () {
+            var fileReader = new FileReader();
+            fileReader.readAsText(fileInput.files[0]);
+            fileReader.onload = function () {
+                showDIv.innerHTML = fileReader.result;
+            }
+        }
+    </script>
+
+</body>
+
+</html>

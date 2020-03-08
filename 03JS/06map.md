@@ -19,10 +19,10 @@ let map = new Map();
 let obj = {
   name: "后盾人"
 };
-
 map.set(obj, "houdunren.com").set("name", "hdcms");
-console.log(map.entries()); //MapIterator {{…} => "houdunren.com", "name" => "hdcms"}
+console.log(map.entries()); //MapIterator (( … ) => "houdunren.com", "name" => "hdcms")
 ```
+
 使用构造函数`new Map`创建的原理如下
 ```js
 const hd = new Map();
