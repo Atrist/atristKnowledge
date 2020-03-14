@@ -36,3 +36,6 @@
 - 构成：
   - 属性名称不得包含任何大写字母，并且前缀“ data-”后必须至少存在一个字符
   - 属性值可以是任何字符串
+
+### querySelectorAll()
+querySelectorAll() 方法返回文档中匹配指定 CSS 选择器的所有元素，返回 NodeList 对象,NodeList 对象表示节点的集合。可以通过索引访问，索引值从 0 开始。
