@@ -7,47 +7,48 @@
     <title>TypeAhead</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <form class="search-form">
-        <input type="text" class="search" placeholder="City or State">
+        <input type="text" class="search" placeholder="诗人 诗名 诗句">
         <ul class="suggestions">
-            <li>Filter for a city</li>
-            <li>or a state</li>
+            <li>输入词句,找一首诗</li>
+            <li></li>
         </ul>
+
     </form>
 
     <script>
-        const endPoint =
-            'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
-
-        const cities = [];
+        const endPoint = 'https://gist.githubusercontent.com/soyaine/81399bb2b24ca1bb5313e1985533c640/raw/bdf7df2cbcf70706c4a5e51a7dfb8c933ed78878/TangPoetry.json';
+        const poems = [];
+        // 异步获取数据
         fetch(endPoint)
             .then(blob => blob.json())
-            .then(data => cities.push(...data));
+            .then(data => poems.push(...data));
 
-        function findMatches(wordTomatch, cities) {
-            return cities.filter(place => {
+        // 找到与用户输入相匹配的诗句
+        function findMatches(wordTomatch, poems) {
+            return poems.filter(poem => {
                 const regex = new RegExp(wordTomatch, 'gi');
-
-                return place.city.match(regex) || place.state.match(regex);
+                // 通过  诗人, 诗名,诗句
+                // 由于author是数组,所以需要转换成字符串
+                const author = poem.detail_author.join(' ');
+                return poem.title.match(regex) || poem.detail_text.match(regex) || author.match(regex);
             });
         }
 
-        function numberWithCommas(x) {
-            return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
-        }
-
+        // 展示匹配的数据
         function displayMathches() {
-            const matchArray = findMatches(this.value, cities);
-            const html = matchArray.map(place => {
+            const matchArray = findMatches(this.value, poems);
+            const html = matchArray.map(poems => {
                 const regex = new RegExp(this.value, 'gi');
-                const cityName = place.city.replace(regex, `<span class="h1">${this.value}</span>`);
-                const stateName = place.state.replace(regex, `<span class="h1">${this.value}</span>`);
+                const poemTitle = poems.title.replace(regex, `<span class="h1">${this.value}</span>`);
+                const poemText = poems.detail_text.replace(regex, `<span class="h1">${this.value}</span>`);
 
                 return `<li>
-                  <span class="name">${cityName},${stateName}</span>
-                  <span class="population">${numberWithCommas(place.population)}</span>
-                  </li>`;
+                <span class="name">${poemText}</span>
+                <span class="poemTitle">${poems.title} - ${poems.detail_author.join(' ')}</span>
+                    </li>`;
             }).join('');
             suggestions.innerHTML = html;
         }
