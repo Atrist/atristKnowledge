@@ -19,6 +19,8 @@ Canvas 的默认大小为300像素×150像素（宽×高，像素的单位是px�
 >注意: 如果你绘制出来的图像是扭曲的, 尝试用width和height属性为`<canvas>`明确规定宽高，而不是使用CSS。
 
 
+
+
 ## JS 鼠标事件
 [MDN文档](https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent)
 
