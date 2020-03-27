@@ -164,4 +164,4 @@ offsetWidth
 progress.addEventListener('mousedown', () => mousedown = true);
 progress.addEventListener('mouseup', () => mousedown = false);
 ```
-参照bilibili视频的做法,当鼠标在进度条上按下时,进度条全权接管鼠标,只有当鼠标键松开的时候,进度条不再移动.
+参照bilibili视频的做法,当鼠标在进度条上按下时,进度条全权接管鼠标,只有当鼠标键松开的时候,然后更新进度条.
