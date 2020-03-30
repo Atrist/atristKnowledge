@@ -2,10 +2,9 @@ const MongoClient = require('mongodb').MongoClient;
 const assert = require('assert');
 
 
-const authMechanism = 'SCRAM-SHA-1';
 
 // Connection URL
-const url = 'mongodb://atrist:1024@39.97.171.144:27017/learnDemo';
+const url = 'mongodb://39.97.171.144:27017';
 
 
 // Create a new MongoClient
