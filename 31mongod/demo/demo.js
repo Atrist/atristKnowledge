@@ -14,6 +14,5 @@ const client = new MongoClient(url);
 client.connect(function(err) {
   assert.equal(null, err);
   console.log("Connected correctly to server");
-
   client.close();
 });
