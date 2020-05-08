@@ -1,9 +1,28 @@
-# Generator
+
+<!-- TOC -->
+
+- [1. Generator](#1-generator)
+  - [1.1. Generator 函数](#11-generator-%e5%87%bd%e6%95%b0)
+  - [1.2. Generator 是可迭代的](#12-generator-%e6%98%af%e5%8f%af%e8%bf%ad%e4%bb%a3%e7%9a%84)
+  - [1.3. 使用 generator 进行迭代](#13-%e4%bd%bf%e7%94%a8-generator-%e8%bf%9b%e8%a1%8c%e8%bf%ad%e4%bb%a3)
+  - [1.4. Generator 组合](#14-generator-%e7%bb%84%e5%90%88)
+  - [1.5. “yield” 是一条双向路](#15-yield-%e6%98%af%e4%b8%80%e6%9d%a1%e5%8f%8c%e5%90%91%e8%b7%af)
+  - [1.6. generator.throw](#16-generatorthrow)
+  - [1.7. 总结](#17-%e6%80%bb%e7%bb%93)
+- [2. Async iterator 和 generator](#2-async-iterator-%e5%92%8c-generator)
+  - [2.1. Async iterator](#21-async-iterator)
+  - [2.2. Async generator](#22-async-generator)
+  - [2.3. Async iterable](#23-async-iterable)
+  - [2.4. 实际的例子](#24-%e5%ae%9e%e9%99%85%e7%9a%84%e4%be%8b%e5%ad%90)
+  - [2.5. 总结](#25-%e6%80%bb%e7%bb%93)
+
+<!-- /TOC -->
+# 1. Generator
 常规函数只会返回一个单一值（或者不返回任何值）。
 
 而 Generator 可以按需一个接一个地返回（“yield”）多个值。它们可与 iterable 完美配合使用，从而可以轻松地创建数据流。
 
-## Generator 函数
+## 1.1. Generator 函数
 要创建一个 generator，我们需要一个特殊的语法结构：function*，即所谓的 “generator function”。
 
 它看起来像这样：
@@ -85,7 +104,7 @@ alert(JSON.stringify(three)); // {value: 3, done: true}
 
 但是通常更倾向于第一种语法，因为星号 * 表示它是一个 generator 函数，它描述的是函数种类而不是名称，因此 * 应该和 function 关键字紧贴一起。
 
-## Generator 是可迭代的
+## 1.2. Generator 是可迭代的
 当你看到 `next()` 方法，或许你已经猜到了 generator 是 可迭代（iterable）的。（译注：`next()` 是 iterator 的必要方法）
 
 我们可以使用 `for..of` 循环遍历它所有的值：
@@ -134,7 +153,7 @@ alert(sequence); // 0, 1, 2, 3
 ```
 在上面这段代码中，`...generateSequence()` 将可迭代的 generator 对象转换为了一个数组
 
-## 使用 generator 进行迭代
+## 1.3. 使用 generator 进行迭代
 在前面的 `Iterable object`（可迭代对象） 一章中，我们创建了一个可迭代的 range 对象，它返回 from..to 的值。
 
 现在，我们回忆一下代码：
@@ -199,7 +218,7 @@ alert( [...range] ); // 1,2,3,4,5
 
 这种情况下肯定需要在 `generator` 的 `for..of` 循环中添加一个 break（或者 return）。否则循环将永远重复下去并挂起。
 
-## Generator 组合
+## 1.4. Generator 组合
 Generator 组合（composition）是 generator 的一个特殊功能，它允许透明地（transparently）将 generator 彼此“嵌入（embed）”到一起。
 
 例如，我们有一个生成数字序列的函数：
@@ -279,7 +298,7 @@ alert(str); // 0..9A..Za..z
 ```
 Generator 组合（composition）是将一个 generator 流插入到另一个 generator 流的自然的方式。它不需要使用额外的内存来存储中间结果。
 
-## “yield” 是一条双向路
+## 1.5. “yield” 是一条双向路
 目前看来，generator 和可迭代对象类似，都具有用来生成值的特殊语法。但实际上，generator 更加强大且灵活。
 
 这是因为 yield 是一条双向路（two-way street）：它不仅可以向外返回结果，而且还可以将外部的值传递到 generator 内。
@@ -349,7 +368,7 @@ alert( generator.next(9).done ); // true
 
 这个过程就像“乒乓球”游戏。每个 `next(value)`（除了第一个）传递一个值到 `generator` 中，该值变成了当前` yield` 的结果，然后获取下一个 `yield` 的结果。
 
-## generator.throw
+## 1.6. generator.throw
 正如我们在上面的例子中观察到的那样，外部代码可能会将一个值传递到 `generator`，作为 yield 的结果
 
 ……但是它也可以在那里发起（抛出）一个 error。这很自然，因为 error 本身也是一种结果。
@@ -396,7 +415,7 @@ try {
 ```
 如果我们没有在那里捕获这个 error，那么，通常，它会掉入外部调用代码（如果有），如果在外部也没有被捕获，则会杀死脚本。
 
-## 总结
+## 1.7. 总结
 - Generator 是通过 generator 函数 `function* f(…) {…}` 创建的。
 - 在 generator（仅在）内部，存在 yield 操作。
 - 外部代码和 generator 可能会通过 next/yield 调用交换结果。
@@ -407,12 +426,12 @@ try {
 
 在 Web 编程中，我们经常使用数据流，因此这是另一个非常重要的使用场景。
 
-# Async iterator 和 generator
+# 2. Async iterator 和 generator
 异步迭代器（iterator）允许我们对按需通过异步请求而得到的数据进行迭代。例如，我们通过网络分段（chunk-by-chunk）下载数据时。异步生成器（generator）使这一步骤更加方便。
 
 首先，让我们来看一个简单的示例以掌握语法，然后再看一个实际用例。
 
-## Async iterator
+## 2.1. Async iterator
 异步迭代器（async iterator）与常规的迭代器类似，不过语法上有一点区别。
 
 一个“常规的”可迭代对象，即我们在 Iterable object（可迭代对象） 一章中提到的，看起来像这样：
@@ -521,7 +540,7 @@ alert( [...range] ); // Error, no Symbol.iterator
 ```
 这很正常，因为它期望找到 `Symbol.iterator`，跟 `for..of` 没有 await 一样。并非 `Symbol.asyncIterator`。
 
-## Async generator
+## 2.2. Async generator
 正如我们所知，JavaScript 也支持生成器（generator），并且它们也是可迭代的。
 
 让我们回顾一下 Generator 一章的序列生成器（generator）。它生成从 start 到 end 的一系列值：
@@ -574,7 +593,7 @@ async function* generateSequence(start, end) {
 result = await generator.next(); // result = {value: ..., done: true/false}
 
 ```
-## Async iterable
+## 2.3. Async iterable
 正如我们所知道的，要使一个对象可迭代，我们需要给它添加 `Symbol.iterator`。
 ```js
 let range = {
@@ -633,7 +652,7 @@ let range = {
 ```
 现在，value 之间的延迟为 1 秒。
 
-## 实际的例子
+## 2.4. 实际的例子
 到目前为止，我们为了获得基础的了解，看到的都是简单的例子。接下来，我们来看一个实际的用例。
 
 目前，有很多在线服务都是发送的分页数据（paginated data）。例如，当我们需要一个用户列表时，一个请求只返回一个预定义数量的用户（例如 100 个用户）— “一页”，并提供了指向下一页的 URL。
@@ -701,7 +720,7 @@ async function* fetchCommits(repo) {
 ```
 这就是我们想要的。从外部看不到分页请求（paginated requests）的内部机制。对我们来说，它只是一个返回 commit 的 async generator。
 
-## 总结
+## 2.5. 总结
 常规的 iterator 和 generator 可以很好地处理那些不需要花费时间来生成的的数据。
 
 当我们期望异步地，有延迟地获取数据时，可以使用它们的 async counterpart，并且使用 `for await..of` 替代 `for..of`。
