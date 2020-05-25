@@ -1,4 +1,41 @@
-# 弹窗和 window 的方法
+
+<!-- TOC -->
+
+- [1. 弹窗和 window 的方法](#1-弹窗和-window-的方法)
+  - [1.1. 阻止弹窗](#11-阻止弹窗)
+  - [1.2. window.open](#12-windowopen)
+  - [1.3. 示例：一个最简窗口](#13-示例一个最简窗口)
+  - [1.4. 从窗口访问弹窗](#14-从窗口访问弹窗)
+  - [1.5. 从弹窗访问窗口](#15-从弹窗访问窗口)
+  - [1.6. 关闭弹窗](#16-关闭弹窗)
+  - [1.7. 滚动和调整大小](#17-滚动和调整大小)
+  - [1.8. 滚动窗口](#18-滚动窗口)
+  - [1.9. 弹窗的聚焦/失焦](#19-弹窗的聚焦失焦)
+  - [1.10. 总结](#110-总结)
+- [2. 跨窗口通信](#2-跨窗口通信)
+  - [2.1. 同源](#21-同源)
+    - [2.1.1. 实例：iframe](#211-实例iframe)
+  - [2.2. 子域上的 window：document.domain](#22-子域上的-windowdocumentdomain)
+  - [2.3. Iframe：错误文档陷阱](#23-iframe错误文档陷阱)
+  - [2.4. 集合：window.frames](#24-集合windowframes)
+  - [2.5. “sandbox” iframe 特性](#25-sandbox-iframe-特性)
+  - [2.6. 跨窗口通信](#26-跨窗口通信)
+    - [2.6.1. postMessage](#261-postmessage)
+    - [2.6.2. onmessage](#262-onmessage)
+  - [2.7. 总结](#27-总结)
+- [3. 点击劫持攻击](#3-点击劫持攻击)
+  - [3.1. 原理](#31-原理)
+  - [3.2. 示例](#32-示例)
+  - [3.3. 传统防御（弱 👎）](#33-传统防御弱-)
+    - [3.3.1. 阻止顶级导航](#331-阻止顶级导航)
+    - [3.3.2. Sandbox 特性](#332-sandbox-特性)
+  - [3.4. X-Frame-Options](#34-x-frame-options)
+  - [3.5. 显示禁用的功能](#35-显示禁用的功能)
+  - [3.6. Samesite cookie 特性](#36-samesite-cookie-特性)
+  - [3.7. 总结](#37-总结)
+
+<!-- /TOC -->
+# 1. 弹窗和 window 的方法
 
 弹窗（popup）是向用户显示其他文档的最古老的方法之一。
 
@@ -20,7 +57,7 @@ window.open("https://javascript.info/");
 2. 打开弹窗非常容易。
 3. 弹窗可以导航（修改 URL），并将消息发送到 opener 窗口（译注：即打开弹窗的窗口）。
 
-## 阻止弹窗
+## 1.1. 阻止弹窗
 
 在过去，很多恶意网站经常滥用弹窗。一个不好的页面可能会打开大量带有广告的弹窗。因此，现在大多数浏览器都会通过阻止弹窗来保护用户。
 
@@ -60,7 +97,7 @@ setTimeout(() => window.open("http://google.com"), 1000);
 
 区别在于 Firefox 可以接受 2000ms 或更短的延迟，但是超过这个时间 —— 则移除“信任”。所以，第一个弹窗被阻止，而第二个却没有。
 
-## window.open
+## 1.2. window.open
 
 打开一个弹窗的语法是 `window.open(url, name, params)`：
 
@@ -88,7 +125,7 @@ setTimeout(() => window.open("http://google.com"), 1000);
 
 还有一些不太受支持的特定于浏览器的功能，通常不使用。通常不使用这些功能。更多示例请见 [MDN 中的 window.open](https://developer.mozilla.org/en/DOM/window.open)。
 
-## 示例：一个最简窗口
+## 1.3. 示例：一个最简窗口
 
 让我们打开一个包含最小功能集的新窗口，来看看哪些功能是浏览器允许禁用的：
 
@@ -119,7 +156,7 @@ open("/", "test", params);
 - 如果参数中没有 `left/top`，那么浏览器会尝试在最后打开的窗口附近打开一个新窗口。
 - 如果没有 `width/height`，那么新窗口的大小将与上次打开的窗口大小相同。
 
-## 从窗口访问弹窗
+## 1.4. 从窗口访问弹窗
 
 open 调用会返回对新窗口的引用。它可以用来操纵弹窗的属性，更改位置，甚至更多操作。
 
@@ -152,7 +189,7 @@ newWindow.onload = function () {
 
 否则，例如，如果主窗口来自于 `site.com`，弹窗来自于 `gmail.com`，则处于安全性考虑，这两个窗口不能访问彼此的内容。有关详细信息，请参见 [跨窗口通信](https://zh.javascript.info/cross-window-communication) 一章。
 
-## 从弹窗访问窗口
+## 1.5. 从弹窗访问窗口
 
 弹窗也可以使用 `window.opener` 来访问 opener 窗口。除了弹窗之外，对其他所有窗口来说，`window.opener` 均为 null。
 
@@ -168,7 +205,7 @@ newWin.document.write(
 
 所以，窗口之间的连接是双向的：主窗口和弹窗之间相互引用。
 
-## 关闭弹窗
+## 1.6. 关闭弹窗
 
 关闭一个窗口：`win.close()`。
 
@@ -189,7 +226,7 @@ newWindow.onload = function () {
 };
 ```
 
-## 滚动和调整大小
+## 1.7. 滚动和调整大小
 
 有一些方法可以移动一个窗口，或者调整一个窗口的大小：
 
@@ -217,7 +254,7 @@ JavaScript 无法最小化或者最大化一个窗口。这些操作系统级别
 
 移动或者调整大小的方法不适用于最小化/最大化的窗口。
 
-## 滚动窗口
+## 1.8. 滚动窗口
 
 `win.scrollBy(x,y)`<br/>
 相对于当前位置，将窗口向右滚动 x 像素，并向下滚动 y 像素。允许负值。
@@ -230,7 +267,7 @@ JavaScript 无法最小化或者最大化一个窗口。这些操作系统级别
 
 这里也有 `window.onscroll` 事件。
 
-## 弹窗的聚焦/失焦
+## 1.9. 弹窗的聚焦/失焦
 
 从理论上讲，使用 `window.focus()` 和 `window.blur()` 方法可以使窗口获得或失去焦点。此外，这里还有 focus/blur 事件，可以聚焦窗口并捕获访问者切换到其他地方的瞬间。
 
@@ -253,7 +290,7 @@ window.onblur = () => window.focus();
 - 当我们打开一个弹窗时，在它上面执行 `newWindow.focus()` 是个好主意。以防万一，对于某些操作系统/浏览器组合（combination），它可以确保用户现在位于新窗口中。
 - 如果我们想要跟踪访问者何时在实际使用我们的 Web 应用程序，我们可以跟踪 `window.onfocus/onblur`。这使我们可以暂停/恢复页面活动和动画等。但是请注意，blur 事件意味着访问者从窗口切换了出来，但他们仍然可以观察到它。窗口处在背景中，但可能仍然是可见的。
 
-## 总结
+## 1.10. 总结
 
 弹窗很少使用，因为有其他选择：在页面内或在 iframe 中加载和显示信息。
 
@@ -270,13 +307,13 @@ window.onblur = () => window.focus();
 - `focus()` 和 `blur()` 方法允许聚焦/失焦于窗口。但它们并不是一直都有效。
 - `focus`和 `blur` 事件允许跟踪窗口的切换。但是请注意，在 `blur` 之后，即使窗口在背景状态下，窗口仍有可能是可见的。
 
-# 跨窗口通信
+# 2. 跨窗口通信
 
 “同源（Same Origin）”策略限制了窗口（window）和 frame 之间的相互访问。
 
 这个想法出于这样的考虑，如果一个用户有两个打开的页面：一个来自 john-smith.com，另一个是 `gmail.com`，那么用户将不希望 `john-smith.com` 的脚本可以读取 `gmail.com` 中的邮件。所以，“同源”策略的目的是保护用户免遭信息盗窃。
 
-## 同源
+## 2.1. 同源
 
 如果两个 URL 具有相同的协议，域和端口，则称它们是“同源”的。
 
@@ -298,7 +335,7 @@ window.onblur = () => window.focus();
 - 如果我们有对另外一个窗口（例如，一个使用 window.open 创建的弹窗，或者一个窗口中的 iframe）的引用，并且该窗口是同源的，那么我们就具有对该窗口的全部访问权限。
 - 否则，如果该窗口不是同源的，那么我们就无法访问该窗口中的内容：变量，文档，任何东西。唯一的例外是 `location`：我们可以修改它（进而重定向用户）。但是我们无法读取 `location`（因此，我们无法看到用户当前所处的位置，也就不会泄漏任何信息）。
 
-### 实例：iframe
+### 2.1.1. 实例：iframe
 
 一个 `<iframe>` 标签承载了一个单独的嵌入的窗口，它具有自己的 `document` 和 `window`。
 
@@ -366,7 +403,7 @@ window.onblur = () => window.focus();
 
 ……但是，我们无法使用 `iframe.contentWindow.onload` 访问不同源的 iframe。因此，请使用 `iframe.onload`
 
-## 子域上的 window：document.domain
+## 2.2. 子域上的 window：document.domain
 
 根据定义，两个具有不同域的 URL 具有不同的源。
 
@@ -380,7 +417,7 @@ document.domain = "site.com";
 
 这样就可以了。现在它们可以无限制地进行交互了。但是再强调一遍，这仅适用于具有相同二级域的页面。
 
-## Iframe：错误文档陷阱
+## 2.3. Iframe：错误文档陷阱
 
 当一个 iframe 来自同一个源时，我们可能会访问其 document，但是这里有一个陷阱。它与跨源无关，但你一定要知道。
 
@@ -429,7 +466,7 @@ document.domain = "site.com";
 </script>
 ```
 
-## 集合：window.frames
+## 2.4. 集合：window.frames
 
 获取 `<iframe>`的 window 对象的另一个方式是从命名集合 window.frames 中获取：
 
@@ -472,7 +509,7 @@ if (window == top) {
 }
 ```
 
-## “sandbox” iframe 特性
+## 2.5. “sandbox” iframe 特性
 
 sandbox 特性（attribute）允许在 `<iframe>` 中禁止某些特定行为，以防止其执行不被信任的代码。它通过将 iframe 视为非同源的，或者应用其他限制来实现 iframe 的“沙盒化”。
 
@@ -542,7 +579,7 @@ sandbox 特性（attribute）允许在 `<iframe>` 中禁止某些特定行为，
 
 "sandbox" 特性的目的仅是 **添加更多** 限制。它无法移除这些限制。尤其是，如果 `iframe`来自其他源，则无法放宽同源策略。
 
-## 跨窗口通信
+## 2.6. 跨窗口通信
 
 `postMessage` 接口允许窗口之间相互通信，无论它们来自什么源。
 
@@ -550,7 +587,7 @@ sandbox 特性（attribute）允许在 `<iframe>` 中禁止某些特定行为，
 
 这个接口有两个部分。
 
-### postMessage
+### 2.6.1. postMessage
 
 想要发送消息的窗口需要调用接收窗口的 [postMessage](https://developer.mozilla.org/zh/docs/Web/API/Window.postMessage) 方法。换句话说，如果我们想把消息发送给 win，我们应该调用 `win.postMessage(data, targetOrigin)`。
 
@@ -590,7 +627,7 @@ sandbox 特性（attribute）允许在 `<iframe>` 中禁止某些特定行为，
 >
 ```
 
-### onmessage
+### 2.6.2. onmessage
 
 为了接收消息，目标窗口应该在 `message` 事件上有一个处理程序。当 `postMessage` 被调用时触发该事件（并且 targetOrigin 检查成功）。
 
@@ -672,7 +709,7 @@ window.addEventListener("message", function (event) {
 </html>
 ```
 
-## 总结
+## 2.7. 总结
 
 要调用另一个窗口的方法或者访问另一个窗口的内容，我们应该首先拥有对其的引用。
 
@@ -710,13 +747,13 @@ window.addEventListener("message", function (event) {
 
 我们应该使用 `addEventListener` 来在目标窗口中设置 message 事件的处理程序。
 
-# 点击劫持攻击
+# 3. 点击劫持攻击
 
 “点击劫持”攻击允许恶意页面 **以用户的名义** 点击“受害网站”。
 
 许多网站都被黑客以这种方式攻击过，包括 Twitter、Facebook 和 Paypal 等许多网站。当然，它们都已经被修复了。
 
-## 原理
+## 3.1. 原理
 
 原理十分简单。
 
@@ -727,7 +764,7 @@ window.addEventListener("message", function (event) {
 3. 恶意页面在该链接上方放置了一个透明的 `<iframe>`，其 `src` 来自于 `facebook.com`，这使得“点赞”按钮恰好位于该链接上面。这通常是通过 z-index 实现的。
 4. 用户尝试点击该链接时，实际上点击的是“点赞”按钮。
 
-## 示例
+## 3.2. 示例
 
 这是恶意页面看起来的样子。为了清楚起见，我们将 `<iframe>` 设置成了半透明的（在真正的恶意页面中，它是全透明的）：
 
@@ -908,7 +945,7 @@ window.addEventListener("message", function (event) {
 
 当用户无法在屏幕上看到自己输入的字符时，通常会停止打字。
 
-## 传统防御（弱 👎）
+## 3.3. 传统防御（弱 👎）
 
 最古老的防御措施是一段用于禁止在 frame 中打开页面的 JavaScript 代码（所谓的 “framebusting”）。
 
@@ -924,7 +961,7 @@ if (top != window) {
 
 这个方法并不可靠，因为有许多方式可以绕过这个限制。下面我们就介绍几个。
 
-### 阻止顶级导航
+### 3.3.1. 阻止顶级导航
 
 我们可以阻止因更改 [beforeunload](https://zh.javascript.info/onload-ondomcontentloaded#window.onbeforeunload) 事件处理程序中的 top.location 而引起的过渡（transition）。
 
@@ -1004,7 +1041,7 @@ window.onbeforeunload = function () {
 </html>
 ```
 
-### Sandbox 特性
+### 3.3.2. Sandbox 特性
 
 `sandbox` 特性的限制之一就是导航。沙箱化的 iframe 不能更改 top.location。
 
@@ -1018,7 +1055,7 @@ window.onbeforeunload = function () {
 
 还有其他方式可以绕过这个弱鸡防御。
 
-## X-Frame-Options
+## 3.4. X-Frame-Options
 
 服务器端 header X-Frame-Options 可以允许或禁止在 frame 中显示页面。
 
@@ -1043,7 +1080,7 @@ window.onbeforeunload = function () {
 ```
 上面这个 iframe 可能为空，或者通过 alert 告知你浏览器不允许以这种方式导航至该页面，这取决于你的浏览器。
 
-## 显示禁用的功能
+## 3.5. 显示禁用的功能
 X-Frame-Options 有一个副作用。其他的网站即使有充分的理由也无法在 frame 中显示我们的页面。
 
 因此，还有其他解决方案……例如，我们可以用一个样式为 height: 100%; width: 100%; 的 `<div>` “覆盖”页面，这样它就能拦截所有点击。如果 `window == top` 或者我们确定不需要保护时，再将该 `<div>` 移除。
@@ -1135,7 +1172,7 @@ X-Frame-Options 有一个副作用。其他的网站即使有充分的理由也�
 </html>
 ```
 
-## Samesite cookie 特性
+## 3.6. Samesite cookie 特性
 samesite cookie 特性也可以阻止点击劫持攻击。
 
 具有 samesite 特性的 cookie 仅在网站是通过直接方式打开（而不是通过 frame 或其他方式）的情况下才发送到网站。更多细节请见 [Cookie，document.cookie](https://zh.javascript.info/cookie#samesite)。
@@ -1150,7 +1187,7 @@ Set-Cookie: authorization=secret; samesite
 
 然而，这也可能会使得劫持攻击在少数情况下起作用。例如，通过检查 IP 地址来防止重复投票的匿名投票网站仍然会受到点击劫持的攻击，因为它不使用 cookie 对用户身份进行验证。
 
-## 总结
+## 3.7. 总结
 点击劫持是一种“诱骗”用户在不知情的情况下点击恶意网站的方式。如果是重要的点击操作，这是非常危险的。
 
 黑客可以通过信息发布指向他的恶意页面的链接，或者通过某些手段引诱访问者访问他的页面。当然还有很多其他变体。
