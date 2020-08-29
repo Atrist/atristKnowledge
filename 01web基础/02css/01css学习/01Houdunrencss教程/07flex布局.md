@@ -3,26 +3,6 @@
 容器盒子里面包含着容器元素，使用`display:flex;`或`display:inline-flex`声明为弹性盒子。
 
 **声明块级弹性盒子**
-<div style="height:100px;margin-left:50px;margin-top:50px;outline:solid 5px silver;display:flex;padding:20px;">
-  <div style="outline: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;
-    line-height: 5em;
-    width: 300px;">1</div>
-	<div style="outline: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;
-    line-height: 5em;
-    width: 300px;">2</div>
-	<div style="outline: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;
-    line-height: 5em;
-    width:300px;">3</div>
-</div>
-<br/><br/>
-
-
 ```html
 <style>
   * {
@@ -56,26 +36,6 @@
 
 **声明内联级弹性盒子**
 
-<div style="height:100px;margin-left:50px;margin-top:50px;outline:solid 5px silver;display:inline-flex;padding:20px;">
-  <div style="  outline: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;
-    line-height: 5em;
-    width: 100px;">1</div>
-	<div style="  outline: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;
-    line-height: 5em;
-    width: 100px;">2</div>
-	<div style="  outline: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;
-    line-height: 5em;
-    width: 100px;">3</div>
-</div>
-<br/><br/>
-
-
 ```html
 <style>
   ...
@@ -99,19 +59,6 @@ column	|从上到下垂直排列元素
 column-reverse	|从下到上垂直排列元素
 
 **row-reverse**
-<div style="width:500px;border:solid 5px silver;display:flex;box-sizing:border-box;padding:10px;flex-direction:row-reverse;">
-	<h4 style="border:solid 5px blueviolet;
-    padding: 10px;
-    margin: 10px;">后盾人</h4>
-	<span style="border: solid 5px blueviolet;
-    padding: 10px;
-    margin: 10px;">hdcms.com</span>
-	<p style="border: solid 5px blueviolet;
-    padding: 10px;
-    margin: 10px;">houdunren.com</p>
-</div>
-
-<br/>
 ```html
 <style>
   * {
@@ -147,21 +94,6 @@ column-reverse	|从下到上垂直排列元素
 ```
 
 **column-reverse**
-<div style="width:500px;border:solid 5px silver;display:flex;box-sizing:border-box;padding:10px;flex-direction:column-reverse;">
-	<h4 style="border:solid 5px blueviolet;
-    padding: 10px;
-    margin: 10px;">后盾人</h4>
-	<span style="border: solid 5px blueviolet;
-    padding: 10px;
-    margin: 10px;">hdcms.com</span>
-	<p style="border: solid 5px blueviolet;
-    padding: 10px;
-    margin: 10px;">houdunren.com</p>
-</div>
-
-<br/>
-
-
 ```css
 div {
 	...
@@ -180,26 +112,6 @@ wrap	|容器元素在必要的时候拆行或拆列(拆行与拆列跟父元素�
 wrap-reverse	|容器元素在必要的时候拆行或拆列，但是以相反的顺序
 
 **行元素换行**
-
-<div style="width:500px;border:solid 5px silver;padding:10px;display:flex;flex-direction:row;flex-wrap:wrap;">
-    <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">1</div>
-        <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">2</div>
-        <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">3</div>
-</div>
-<br/>
-
 
 ```html
 <style>
@@ -244,25 +156,6 @@ wrap-reverse	|容器元素在必要的时候拆行或拆列，但是以相反的
 ```
 
 **水平排列反向换行**
-<div style="width:500px;border:solid 5px silver;padding:10px;display:flex;flex-direction:row;flex-wrap:wrap-reverse;">
-    <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">1</div>
-        <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">2</div>
-        <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">3</div>
-</div>
-<br/>
-
 
 ```css
 ...
@@ -273,51 +166,12 @@ flex-wrap: wrap-reverse;
 
 **垂直元素换行**
 
-<div style="width:500px;border:solid 5px silver;padding:10px;display:flex;flex-direction:column;height:300px;flex-wrap:wrap;">
-    <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">1</div>
-        <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">2</div>
-        <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">3</div>
-</div>
-<br/>
-
-
 ```css
 flex-direction: column;
 flex-wrap: wrap;
 ```
 
 **垂直元素反向换行**
-<div style="width:500px;border:solid 5px silver;padding:10px;display:flex;flex-direction:column;height:300px;flex-wrap:wrap-reverse;">
-    <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">1</div>
-        <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">2</div>
-        <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">3</div>
-    
-</div>
-<br/>
 
 ```css
 flex-direction: column;
@@ -331,27 +185,6 @@ flex-wrap: wrap-reverse;
 ```css
 flex-flow: row-reverse wrap-reverse;
 ```
-
-<div style="width:500px;border:solid 5px silver;padding:10px;display:flex;height:300px;flex-flow:row-reverse wrap-reverse;">
-    <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">1</div>
-        <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">2</div>
-        <div style=" border: solid 5px blueviolet;
-    padding: 30px 80px;
-    margin: 10px;
-    text-align: center;
-    font-size: 28px;">3</div>
-    
-</div>
-<br/>
-
 
 ## 轴说明
 **水平排列**
@@ -383,30 +216,6 @@ space-evenly	|元素间距离平均分配
 
 
 **水平排列元素，并使用 `justify-content: flex-end` 对齐到主轴终点**
-
-<div style="border: solid 5px silver;
-    box-sizing: border-box;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: flex-end;">
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    margin:10px;
-    text-align: center;
-    font-size: 28px;">1</div>
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    margin:10px;
-    text-align: center;
-    font-size: 28px;">2</div>
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    margin:10px;
-    font-size: 28px;">3</div>
-</div>
-<br/>
-
 
 ```html
 <style>
@@ -445,30 +254,6 @@ space-evenly	|元素间距离平均分配
 
 **使用 `space-evenly` 平均分配容器元素**
 
-
-<div style="  border: solid 5px silver;
-    box-sizing: border-box;
-    display: flex;
-    flex-flow: row wrap;
-    justify-content: space-evenly;">
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    margin:10px;
-    text-align: center;
-    font-size: 28px;">1</div>
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    margin:10px;
-    text-align: center;
-    font-size: 28px;">2</div>
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    margin:10px;
-    font-size: 28px;">3</div>
-</div>
-<br/>
-
 ```css
 ...
 div {
@@ -483,27 +268,6 @@ div {
 
 
 **垂直排列时对齐到主轴终点**
-
-
-<div style="  border: solid 5px silver;height:300px;
-    box-sizing: border-box;
-    display: flex;
-    flex-flow: column wrap;
-    justify-content: flex-end;">
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;">1</div>
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;">2</div>
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;">3</div>
-</div>
-<br/>
 
 
 
@@ -533,27 +297,6 @@ flex-end	|元素位于容器的交叉轴结尾
 
 
 **拉伸适应交叉轴** 
-<div style=" height: 300px;
-    border: solid 5px silver;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-  ">
-    <div style=" width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;"> 1</div>
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;">2</div>
-    <div style=" width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;">3</div>
-</div>
-<br/>
 ```html
 <style>
   * {
@@ -593,26 +336,6 @@ flex-end	|元素位于容器的交叉轴结尾
 </div>
 ```
 **对齐到交叉轴的顶部**
-<div style="height:200px;border: solid 5px silver;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;">
-    <div style=" width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;"> 1</div>
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;">2</div>
-    <div style=" width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;">3</div>
-</div>
-<br/>
-
 ```css
 ...
 flex-direction: row;
@@ -621,25 +344,6 @@ align-items: flex-start;
 ```
 
 **对齐到交叉轴底部**
-<div style="height:200px;border: solid 5px silver;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: flex-end;">
-    <div style=" width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;"> 1</div>
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;">2</div>
-    <div style=" width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;">3</div>
-</div>
-<br/>
 
 ```css
 flex-direction: row;
@@ -647,39 +351,12 @@ align-items: flex-end;
 ```
 
 **对齐到交叉轴中心**
-<div style="height:200px;border: solid 5px silver;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: row;
-    align-items: center;">
-    <div style=" width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;"> 1</div>
-    <div style="width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;">2</div>
-    <div style=" width: 80px;
-    border: solid 5px blueviolet;
-    text-align: center;
-    font-size: 28px;">3</div>
-</div>
-<br/>
-
 ```css
 flex-direction: row;
 align-items: center;
 ```
 
 **纵向排列时交叉轴排列**
-
-<div style="height:300px;border:solid 5px silver;box-sizing:border-box;display:flex;flex-direction:column;align-items:center; ">
-  <div style="height:50px;min-width:100px;border:solid 5px blueviolet;text-align:center;font-size:28px;">1</div>
-  <div style="height:50px;min-width:100px;border:solid 5px blueviolet;text-align:center;font-size:28px;">2</div>
-  <div style="height:50px;min-width:100px;border:solid 5px blueviolet;text-align:center;font-size:28px;">3</div>
-</div>
-<br/>
 
 ```html
 <style>
@@ -730,14 +407,6 @@ space-evenly	|元素间距离平均分配
 
 **水平排列在交叉轴中居中排列**
 
-<div style="height:300px;width:300px; border:solid 5px silver;box-sizing:border-box;display:flex;flex-direction:row;flex-wrap:wrap;align-items:flex-start;align-content:center;">
-  <div style="width:90px;border:solid 5px blueviolet;text-align:center;font-size:28px;margin:5px;">1</div>
-  <div style="width:90px;border:solid 5px blueviolet;text-align:center;font-size:28px;margin:5px;">2</div>
-  <div style="width:90px;border:solid 5px blueviolet;text-align:center;font-size:28px;margin:5px;">3</div>
-</div>
-
-<br/>
-
 ```html
 <style>
   * {
@@ -773,15 +442,6 @@ space-evenly	|元素间距离平均分配
 ```
 
 **垂直排列时交叉轴的排列**
-
-
-<div style="height:300px;border:solid 5px silver;padding:10px;width:300px;box-sizing:border-box;display:flex;flex-direction:column;flex-wrap:wrap;align-items:flex-start;align-content:center;margin:5px;">
-    <div style="min-width:50px;min-height:80px; border:solid 5px blueviolet;text-align:center;padding:10px;margin:5px;font-size:28px;">1</div>
-    <div style="min-width:50px;min-height:80px; border:solid 5px blueviolet;text-align:center;font-size:28px;padding:10px;margin:5px;">2</div>
-    <div style="min-width:50px;min-height:80px; border:solid 5px blueviolet;text-align:center;margin:5px;padding:10px;font-size:28px;">3</div>
-</div>
-
-
 
 ```html
 <style>
@@ -832,43 +492,6 @@ center	|元素从弹性容器中心开始
 
 下例中为三个DIV 弹性元素设置了`1、3、6` ，即宽度分成10等份，第三个元素所占宽度为`(宽度/(1+3+6)) X 6`。
 
-
-<div style="border: solid 5px silver;
-        width: 500px;
-        height: 100px;
-        display: flex;
-        flex-direction: row;">
-    <div style=" flex-grow: 1;
-        width: 100px;
-        height: 100px;
-        background: blueviolet;
-        background-clip: content-box;
-        padding: 10px;
-        box-sizing: border-box;
-        font-size: 35px;
-        color: white;">1</div>
-    <div style=" flex-grow: 1;
-        width: 100px;
-        height: 100px;
-        background: blueviolet;
-        background-clip: content-box;
-        padding: 10px;
-        box-sizing: border-box;
-        font-size: 35px;
-        color: white;">2</div>
-    <div style=" flex-grow: 1;
-        width: 100px;
-        height: 100px;
-        background: blueviolet;
-        background-clip: content-box;
-        padding: 10px;
-        box-sizing: border-box;
-        font-size: 35px;
-        color: white;">3</div>
-</div>
-<br/>
-
-
 ```html
 <style>
     * {
@@ -913,42 +536,6 @@ center	|元素从弹性容器中心开始
 
 如果弹性元素设置了宽度，将把（弹性盒子-弹性元素宽度和）后按照 `flex-grow` 进行分配 。
 
-<div style="border: solid 5px silver;
-        width: 500px;
-        height: 100px;
-        display: flex;
-        flex-direction: row;">
-    <div style=" flex-grow: 1;
-        width: 100px;
-        height: 100px;
-        background: blueviolet;
-        background-clip: content-box;
-        padding: 10px;
-        box-sizing: border-box;
-        font-size: 35px;
-        color: white;">1</div>
-    <div style=" flex-grow: 3;
-        width: 100px;
-        height: 100px;
-        background: blueviolet;
-        background-clip: content-box;
-        padding: 10px;
-        box-sizing: border-box;
-        font-size: 35px;
-        color: white;">2</div>
-    <div style=" flex-grow: 6;
-        width: 100px;
-        height: 100px;
-        background: blueviolet;
-        background-clip: content-box;
-        padding: 10px;
-        box-sizing: border-box;
-        font-size: 35px;
-        color: white;">3</div>
-</div>
-<br/>
-
-
 ```html
 <style>
   * {
@@ -989,22 +576,12 @@ center	|元素从弹性容器中心开始
 与 `flex-grow` 相反 `flex-shrink` 是在弹性盒子装不下元素时定义的缩小值。
 
 下例在600宽的弹性盒子中放了 1000 宽的弹性元素。并为最后两个元素设置了缩放，最后一个元素的缩放比例为 `500 -( ( (1000-600) / (100X1+400x3+500X6) ) x 3 ) X 500 = 220.9`，计算公式说明如下：
-```html
+
+```js
 缩小比例 = 不足的空间 / (元素 1 宽度 x 缩小比例) + (元素 2 宽度 x 缩小比例) ...
 最终尺寸 = 元素三宽度 - (缩小比例 x  元素 3 的宽度) X 元素宽度
 ```
-<div style="border: solid 5px silver;
-        width: 400px;
-        height: 120px;
-        display: flex;
-        padding: 10px;
-        box-sizing: content-box;">
-    <div style="width:200px;height:100px;overflow:hidden;background:blueviolet;background-clip:content-box;padding:10px;border:solid 1px blueviolet;flex-shrink:0;box-sizing:border-box;font-size:30px;color:white;">1</div>
-    <div style="width:200px;height:100px;overflow:hidden;background:blueviolet;background-clip:content-box;padding:10px;border:solid 1px blueviolet;flex-shrink:1;box-sizing:border-box;font-size:30px;color:white;">2</div>
-    <div style="width:200px;height:100px;overflow:hidden;background:blueviolet;background-clip:content-box;padding:10px;border:solid 1px blueviolet;flex-shrink:3;box-sizing:border-box;font-size:30px;color:white;">3</div>
-</div>
 
-<br/>
 
 
 ```html
@@ -1062,15 +639,8 @@ flex-basis 属性定义了在分配多余空间之前，项目占据的主轴空
 可以是长度单位，也可以是百分比。
 
 **优先级**
+
 flex-basis 优先级大于 width、height。
-
-<div style="width:400px;position:relative;height:150px;outline:solid 5px silver;display:flex; padding:20px;">
-  <div style="outline:solid 5px blueviolet;text-align:center;font-size:28px;line-height:5em;flex-basis:100px;width:200px;">1</div>
-  <div style="outline:solid 5px blueviolet;flex-basis:200px;text-align:center;font-size:28px;line-height:5em;">2</div>
-  <div style="outline:solid 5px blueviolet;flex-basis:200px;text-align:center;font-size:28px;line-height:5em;">3</div>
-</div>
-<br/>
-
 
 ```html
 <style>
@@ -1118,23 +688,10 @@ flex-basis 优先级大于 width、height。
 `flex`是`flex-grow、flex-shrink 、flex-basis`缩写组合。
 >建议使用 flex 面不要单独使用 flex-grow / flew-shrink / flex-basis 。
 
-
 下例定义平均分配剩余空间，并不进行尺寸缩小，基础尺寸为200px。
 
-<div style="width: 400px;
-  position: relative;
-  height: 100px;
-  outline: solid 5px silver;
-  display: flex;
-  padding: 20px;">
-    <div style="outline: solid 5px blueviolet; text-align: center;font-size: 28px;line-height: 5em;  flex: 1 0 100px;">1</div>
-    <div style="outline: solid 5px blueviolet; text-align: center;font-size: 28px;line-height: 5em;  flex: 1 0 100px;">2</div>
-    <div style="outline: solid 5px blueviolet; text-align: center;font-size: 28px;line-height: 5em;  flex: 1 0 100px;">3</div>
-   </div>
-<br/>
-
-
-```css
+```html
+<style>
 * {
   padding: 0;
   margin: 0;
@@ -1157,7 +714,7 @@ div div {
   flex: 1 0 100px;
 }
 
-
+</style>
 <div>
 <div></div>
 </div>
@@ -1170,20 +727,6 @@ div div {
 
 ## 弹性文本
 文本节点也在弹性布局操作范围内。
-
-<div style="display: flex;
-        flex-direction: row;
-        justify-content: space-between;
-        height: 100px;
-        border:solid 3px blueviolet;
-        align-items: center;
-        font-size: 14px;">
-    后盾人
-    <span style="border:solid 3px blueviolet">houdunren</span>
-    后盾人
-</div>
-
-
 ```html
 <style>
     div {
@@ -1205,14 +748,6 @@ div div {
 
 ## 绝对定位
 绝对定位的弹性元素不参与弹性布局
-
-
-<div style="position:relative;height:200px;width:320px;border:solid 5px silver;box-sizing:border-box;display:flex;justify-content:space-evenly;align-items:flex-start;">
-  <div style="min-width:50px;min-hieght:80px;border:solid 5px blueviolet;text-align:center;font-size:28px;position:absolute;top:0;">1</div>
-  <div style="min-width:50px;min-hieght:80px;border:solid 5px blueviolet;text-align:center;font-size:28px;">2</div>
-  <div style="min-width:50px;min-hieght:80px;border:solid 5px blueviolet;text-align:center;font-size:28px;">3</div>
-</div>
-<br/>
 
 ```html
 <style>
@@ -1257,34 +792,6 @@ div div {
 在弹性布局中对元素使用`margin-right:auto` 等形式可以自动撑满空间。
 
 下例为第一个ul设置 `margin-right:auto` 表示右侧空间自动撑满，第二个ul靠近父元素右边界。
- <div style=" width: 500px;height:80px;
-            margin: 0 auto;" >
-        <nav style="display: flex;
-            border: solid 1px green;
-            margin-top: 20px;
-            align-items: center;
-            height: 60px;
-            box-shadow: 0 0 5px rgba(0, 0, 0, .2);
-            background: #f3f3f3;">
-            <ul style="list-style: none;  display: flex;
-            align-items: center;
-            margin-right: auto;">
-                <li style=" margin: 0 10px;">houdunren</li>
-                <li style=" margin: 0 10px;">视频教程</li>
-                <li style=" margin: 0 10px;">每晚直播</li>
-                <li stye=" margin: 0 10px;">在线文档</li>
-            </ul>
-            <ul style=" list-style: none;">
-                <li style="width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: #9b59b6;">
-                </li>
-            </ul>
-        </nav>
-    </div>
-<br/>
-
 
 ```html
 <head>

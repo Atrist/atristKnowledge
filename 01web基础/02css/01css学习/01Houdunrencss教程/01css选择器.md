@@ -288,27 +288,27 @@ h2[name|="aaaa"] {
 ### 超链接伪类
 定义链接的不同状态
 ```html
+<style>
 a:link {
     color: red
 }
-
 a:visited {
     color: green
 }
-
 a:hover {
     color: blue
 }
-
 a:active {
     color: yellow
 }
-...
+</style>
 
 <a href="https://www.atrist.com">Atrist</a>
 ```
+
 不只是链接可以使用伪类，其他元素也可以使用。下面是对表单的点击与获取焦点状态的样式设置
 ```html
+<style>
 a:link {
     color: red
 }
@@ -325,17 +325,18 @@ a:active {
     color: yellow
 }
 ...
-
+</style>
 <a href="https://www.atrist.com">Atrist</a>
 ```
 ### :target
 用于控制具有锚点目标元素的样式
 ```html
+<style>
 div{
     height:900px;
 
 }
-
+</style>
 <a href="#atrst">atrist</a>
 <div></div>
 <div id="atrist">
@@ -345,7 +346,7 @@ div{
 
 ### :root
 根元素选择伪类即选择html
-```tml
+```css
 :root{
     font-size:100px;
 }
@@ -354,9 +355,11 @@ div{
 ### :empty
 没有内容和空白的元素。下面第一个p标签会产生样式，第二个不会因为有空白内容
 ```html
+<style>
 :empty {
     border: solid 2px red;
 }
+</style>
 
 
 <p></p>
@@ -368,10 +371,11 @@ div{
 ### :first-child
 选择元素中`span`标签并且是第一个
 ```html
+<style>
 article span:first-child {
     color: red;
 }
-...
+</style>
 
 <article>
 	<span>atrist</span>
@@ -385,10 +389,11 @@ article span:first-child {
 ### :first-of-type
 选择类型是`span`的第一个元素
 ```html
+<style>
 article span:first-of-type {
     color: red;
 }
-...
+</style>
 
 <article>
 	<span>atrist.com</span>
@@ -401,9 +406,11 @@ article span:first-of-type {
 ### :last-child
 选择元素中`span`标签并且是最后一个
 ```html
+<style>
 article span:last-child {
     color: red;
 }
+</style>
 <article>
   <span>atrist.com</span>
   <aside>
@@ -415,11 +422,11 @@ article span:last-child {
 ### :last-of-type
 选择类型为`span`的最后一个元素
 ```html
+<style>
 article span:last-of-type {
     color: red;
 }
-...
-
+</style>
 <article>
   <span>atrist.com</span>
   <aside>
@@ -432,10 +439,11 @@ article span:last-of-type {
 ### :only-child
 选择是唯一子元素的`span`标签
 ```html
+<style>
 article span:only-child {
     color: red;
 }
-...
+</style>
 
 <article>
 	<span>houdunren.com</span>
@@ -464,10 +472,11 @@ article span:only-of-type {
 ### nth-child(n)
 选择第二个元素并且是span标签的
 ```html
+<style>
 article span:nth-child(2) {
     color: red;
 }
-...
+</style>
 
 <article>
   <span>houdunren.com</span>
@@ -481,9 +490,11 @@ article span:nth-child(2) {
 ### nth-of-type(n)
 选择第二个`span`元素，不管中间的其他元素
 ```html
+<style>
 article span:nth-of-child(2) {
     color: red;
 }
+</style>
 
 <article>
   <span>Atrist.com</span>
@@ -497,10 +508,12 @@ article span:nth-of-child(2) {
 ### 计算数量
 n为0/1/2/3……,下面是隔列变色
 ```html
+<style>
 table tr>td:nth-child(2n+1) {
     background: green;
     color: white;
 }
+</style>
 <table border="1">
   <tr>
     <td>houdunren.com</td>
@@ -724,10 +737,10 @@ input:invalid {
 p::first-letter {
     font-size: 20px;
 }
+</style>
 <p>
 	后盾人不断更新视频教程
 </p>
-</style>
 ```
 ### 段落首行处理
 ```html
@@ -783,10 +796,11 @@ div>input[type="text"]+span:after {
 
 ### 添加属性内容
 ```html
+<style>
 h2::before {
 	content: attr(title);
 }
-...
+</style>
 
 <h2 title="后盾人">houdunren.com</h2>
 ```
@@ -801,11 +815,12 @@ h2::before {
 ## 权重应用
 规则|粒度
 ---|--
+行内样式|1000
 ID|0100
 class,类属性值|0010
 标签，伪元素|0001
 *|0000
-行内样式|1000
+
 
 **下面是ID权限大于CLASS的示例**
 
@@ -834,22 +849,6 @@ class,类属性值|0010
 ```
 
 ## 属性权重的示例
-<style>
-  /* 权重:0021 */
-  h2[class="color1"][id] {
-		color: red;
-  }
-
-  /* 权重:0012 */
-  article h2[class="color"] {
-  	color: blue;
-  }
-</style>
-
-<article>
-	<h2 class="color1" id="hot1">HDCMS</h2>
-</article>
-
 
 ```html
 <style>
@@ -869,19 +868,6 @@ class,类属性值|0010
 </article>
 ```
 ## 行级优先级最高
-<style>
-  /* 权重:0012 */
-  article h2[class="color"] {
-  	color: blue;
-  }
-
-  #hot {
-  	color: black;
-  }
-</style>
-
-<h2 class="color" id="hot" style="color:green;">HDCMS</h2>
-
 ```html
 <style>
   /* 权重:0012 */
@@ -899,18 +885,6 @@ class,类属性值|0010
 
 # 强制优先级
 有时在规则冲突时，为了让某个规则强制有效可以使用 !important。
-<style>
-  .h2 {
- 	 color: red !important;
-  }
-
-  .h2 {
- 	 color: green;
-  }
-</style>
-
-<h2 class="h2">HDCMS</h2>
-
 
 ```html
 <style>

@@ -10,6 +10,7 @@ right|	向右浮动
 none|	不浮动
 ## 文档流
 没有设置浮动的块元素是独占一行的。
+```html
 <div style="margin-bottom:4px;border:solid 3px red;width:200px;height:200px">
     <div></div>
 </div>
@@ -17,6 +18,7 @@ none|	不浮动
     <div></div>
 </div>
 <br/>
+```
 
 浮动是对后面元素影响，下图中第二个元素设置浮动对第一个元素没有影响
 ```css
@@ -29,6 +31,8 @@ div:last-of-type {
     background: green;
 }
 ```
+
+```html
 <div style="margin-bottom:4px;border:solid 3px red;width:200px;height:200px">
     <div></div>
 </div>
@@ -37,11 +41,12 @@ div:last-of-type {
 </div>
 <div style="Visibility:hidden;background-color:green;width:200px;height:200px;"></div>
 <br/>
+```
 
 ## 丢失空间
 如果只给第一个元素设置浮动，第二个元素不设置，后面的元素会占用第一个元素空间。
 
-
+```html
 <div style="margin-bottom:4px;border:solid 3px red;width:200px;height:200px;float:left;">
     <div></div>
 </div>
@@ -49,7 +54,7 @@ div:last-of-type {
     <div></div>
 </div>
 <br/>
-
+```
 ## 使用浮动
 两个元素都设置浮动后，会并排显示
 ```css
@@ -63,6 +68,8 @@ div:last-of-type {
     background: green;
 }
 ```
+
+```html
 <div style="margin-bottom:4px;border:solid 3px red;width:200px;height:200px;float:left;">
 </div>
 <div style="float:left;background-color:green;width:200px;height:200px;">
@@ -72,6 +79,7 @@ div:last-of-type {
 
 <div style="clear:left;"></div>
 <br/>
+```
 
 **为第二个元素设置浮动**
 ```css
@@ -85,14 +93,15 @@ div:last-of-type {
     background: green;
 ```
 
+```html
 <div style="float:left;border:solid 2px red;width:200px;height:200px;"></div>
 <div style="float:right;background-color:green;width:200px;height:200px;"></div>
 
 <div style="clear:left;"></div>
-
+```
 ## 浮动边界
-浮动元素边界不能超过父元素的padding
-```html
+浮动元素边界不能超过父元素的`padding`
+```css
 main {
     width: 400px;
     border: solid 2px black;
@@ -118,6 +127,7 @@ div:last-of-type {
     background: green;
 }
 ```
+```html
 <main style=" width: 400px;
     border: solid 2px black;
     overflow: auto;
@@ -133,9 +143,7 @@ div:last-of-type {
     box-sizing: border-box;  float: right;
     background: green;"></div>
 </main>
-
-
-<br/>
+```
 ## 浮动转块 
 元素浮动后会变为块元素包括行元素如 span，所以浮动后的元素可以设置宽高
 ```css
@@ -182,7 +190,7 @@ both	|左右都远离浮动元素
 <div class="red"></div>
 <div class="blue"></div>
 ```
-
+```html
 <div style="width: 200px;
     height: 200px;
     margin-bottom: 10px;border:solid 2px green;float:left;"></div>
@@ -194,7 +202,7 @@ both	|左右都远离浮动元素
     margin-bottom: 10px;background-color:blue;clear:both;"></div>
 
 <br/>
-
+```
 **在父元素内部最后面添加一个没有高度的了元素，并使用`clear:both`。**
 ```html
 <style>
@@ -233,6 +241,7 @@ both	|左右都远离浮动元素
     </article>
    <div class="blue"></div>
 ```
+```html
 <article>
         <div style=" width: 200px;
       height: 200px;
@@ -249,6 +258,7 @@ both	|左右都远离浮动元素
       margin-bottom: 10px;background:blue;"></div>
 
 <br/>
+```
 ## AFTER
 使用 ::after 伪类为父元素添加后标签，实现清除浮动影响。
 ```css
