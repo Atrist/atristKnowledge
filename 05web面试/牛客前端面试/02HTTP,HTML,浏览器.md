@@ -158,7 +158,7 @@ div{
 - 状态码304: 如果客户端发送了一个待条件的GET请求且该请求已被允许,而文档的内容(自上次访问以来或者根据请求的条件)并没有改变,则服务器应当返回这个状态码. 即客户端和服务器端只需要传输很少的数据量来做文件的检验, 如果文件没有修改过,则不需要返回全量的数据
 
 ## HTML5新增的元素
-首先html5为了更好的实践web语义化, 增加了header,footer,nav,aside,section等语义化标签, 在表单方面,为了增强表单,为input增加了color,email,data,range等类型,在存储房方面,提供了sessionStorage,localStorage,和离线存储,通过这些存储方式方便数据在客户端的存储和获取,在多媒体方面规定了音频和视频元素audio和 vedio, 另外还有地理定位,canvas画布,拖放, 多线程编程的web worker 和websocket协议
+首先html5为了更好的实践web语义化, 增加了header, footer, nav, aside,section等语义化标签, 在表单方面,为了增强表单,为input增加了color,email,data,range等类型,在存储房方面,提供了sessionStorage,localStorage,和离线存储,通过这些存储方式方便数据在客户端的存储和获取,在多媒体方面规定了音频和视频元素audio和 vedio, 另外还有地理定位,canvas画布,拖放, 多线程编程的web worker 和websocket协议
 
 ## 在地址栏里输入一个URL,到这个页面呈现出来,中间会发生什么?
 这是一个必考的面试题
