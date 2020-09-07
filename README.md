@@ -1,3 +1,11 @@
+# 项目作用
+
+知识 是一切的力
+
+- [ ] 算法
+- [ ] 框架
+- [ ] 网络
+
 # 个人博客地址
 
 [https://atrist.github.io/blog/](https://atrist.github.io/blog/)
