@@ -11,3 +11,9 @@
    这里存放html,html5的we
 ## 参考的资源地址
 
+- [qiu-deqing/FE-interview](https://github.com/qiu-deqing/FE-interview)
+- [The-Art-Of-Programming-By-July](https://github.com/julycoding/The-Art-Of-Programming-By-July)
+- [https://github.com/CyC2018/CS-Notes](https://github.com/CyC2018/CS-Notes)
+- [coding-interview-university](https://github.com/jwasham/coding-interview-university/blob/master/translations/README-cn.md)
+- [habc0807/fe-interview](https://github.com/habc0807/fe-interview)
+- [牛客前端](https://m.nowcoder.com/tutorial/96/f5212664ab664984882b00635066ded2)
