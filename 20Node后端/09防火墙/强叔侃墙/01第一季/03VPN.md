@@ -815,12 +815,12 @@ IPSec中通信双方建立的连接叫做安全联盟SA（Security Association�
 
 天地会总舵和分舵的关键配置和解释如下：
 
-配置项|天地会总舵|天地会分舵
---|--|--
-ACL|**acl number 3000**<br/> rule 5 permit ip source 192.168.0.0 0.0.0.255 destination 172.16.0.0 0.0.0.255|**acl number 3000**<br/> rule 5 permit ip source 172.16.0.0 0.0.0.255 destination 192.168.0.0 0.0.0.255
-**IPSec安全提议**|  **ipsec proposal pro1**<br/> transform esp<br/> encapsulation-mode tunnel<br/> esp authentication-algorithm sha1<br/> esp encryption-algorithm aes |**ipsec proposal pro1** <br/>transform esp <br/> encapsulation-mode tunnel <br/>esp authentication-algorithm sha1 <br/> esp encryption-algorithm aes
-**IPSec安全策略**|**ipsec policy policy1 1 manual**<br/> security acl 3000<br/> proposal pro1<br/> tunnel local 1.1.1.1<br/> tunnel remote 2.2.2.2<br/> sa spi inbound esp 54321<br/>sa spi outbound esp 12345<br/> sa string-key inbound esp huawei@123<br/> sa string-key outbound esp huawei@456<br/>|**ipsec policy policy1 1 manual**<br/> security acl 3000<br/> proposal pro1<br/> tunnel local 2.2.2.2<br/> tunnel remote 1.1.1.1<br/> sa spi inbound esp 12345<br/>sa spi outbound esp 54321<br/> sa string-key inbound esp huawei@456<br/> sa string-key outbound esp huawei@123<br/>
-**应用IPSec安全策略**|**interface GigabitEthernet0/0/1**<br/> ip address 1.1.1.1 255.255.255.0<br/> ipsec policy policy1|**interface GigabitEthernet0/0/0**<br/>ip address 2.2.2.2 255.255.255.0<br/> ipsec policy policy1
+| 配置项                | 天地会总舵                                                                                                                                                                                                                                                                             | 天地会分舵                                                                                                                                                                                                                                                                             |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ACL                   | **acl number 3000**<br/> rule 5 permit ip source 192.168.0.0 0.0.0.255 destination 172.16.0.0 0.0.0.255                                                                                                                                                                                | **acl number 3000**<br/> rule 5 permit ip source 172.16.0.0 0.0.0.255 destination 192.168.0.0 0.0.0.255                                                                                                                                                                                |
+| **IPSec安全提议**     | **ipsec proposal pro1**<br/> transform esp<br/> encapsulation-mode tunnel<br/> esp authentication-algorithm sha1<br/> esp encryption-algorithm aes                                                                                                                                     | **ipsec proposal pro1** <br/>transform esp <br/> encapsulation-mode tunnel <br/>esp authentication-algorithm sha1 <br/> esp encryption-algorithm aes                                                                                                                                   |
+| **IPSec安全策略**     | **ipsec policy policy1 1 manual**<br/> security acl 3000<br/> proposal pro1<br/> tunnel local 1.1.1.1<br/> tunnel remote 2.2.2.2<br/> sa spi inbound esp 54321<br/>sa spi outbound esp 12345<br/> sa string-key inbound esp huawei@123<br/> sa string-key outbound esp huawei@456<br/> | **ipsec policy policy1 1 manual**<br/> security acl 3000<br/> proposal pro1<br/> tunnel local 2.2.2.2<br/> tunnel remote 1.1.1.1<br/> sa spi inbound esp 12345<br/>sa spi outbound esp 54321<br/> sa string-key inbound esp huawei@456<br/> sa string-key outbound esp huawei@123<br/> |
+| **应用IPSec安全策略** | **interface GigabitEthernet0/0/1**<br/> ip address 1.1.1.1 255.255.255.0<br/> ipsec policy policy1                                                                                                                                                                                     | **interface GigabitEthernet0/0/0**<br/>ip address 2.2.2.2 255.255.255.0<br/> ipsec policy policy1                                                                                                                                                                                      |
 
 
 注：除了上述IPSec的配置之外，防火墙安全策略也需要配置，允许总舵和分舵之间建立安全联盟，以及允许总舵私网和分舵私网之间互访。
@@ -873,3 +873,787 @@ IKE最适合于在总舵和众多分舵之间建立IPSec VPN的场景，分舵�
 相比手工方式，IKE方式仅增加了两步：配置IKE安全提议和IKE对等体。IKE安全提议主要用于配置建立IKE SA用到的加密和验证算法。IKE对等体主要配置IKE版本、身份认证和交换模式。
 
 ![](../images/53be0f804c7e7.png)
+
+
+![](../images/1601803254.jpg)
+
+说明：两条红色命令表示本例采用了IKEv1版本主模式。缺省同时开启IKEv1和IKEv2，关闭IKEv2后采用IKEv1版本进行协商。
+
+配置完成之后，总舵和分舵之间有互访数据流时即可触发建立IPSec VPN隧道，下面强叔通过抓包来为大家详解一下IKEv1的精妙之处。
+### IKEv1 招式拆解
+IKEv1版本分两个阶段来完成动态建立IPSec SA的任务：
+- **阶段1-建立IKE SA**：阶段1采用主模式或野蛮模式协商。
+- **阶段2-建立IPSec SA**：阶段2此采用快速模式协商。
+
+下面先介绍主模式+快速模式下的IPSec SA建立过程。
+
+#### 阶段1-建立IKE SA（主模式）
+主模式下IKEv1采用3个步骤6条ISAKMP消息建立IKE SA。下面以网关A主动发起IKE协商为例进行讲解。
+
+![](../images/53be0f9be267c.png)
+
+![](../images/53be0fb2836a5.png)
+
+##### 1. 协商IKE安全提议
+协商分两种情况:
+- 发起方的IKE Peer中引用了IKE Proposal
+- 发起方的IKE peer中没有引用IKE Proposal
+
+二种情况下响应方都会在自己配置的IKE安全提议中寻找与发送方相匹配的IKE安全提议, 如果没有匹配的安全提议则协商失败. IKE Peer双方安全提议匹配的原则为协商双方有相同的加密算法、认证算法、身份认证方法和DH组标识（不包括IKE SA生存周期）。
+
+**说明**：通过IKEv1协议协商建立IPSec安全联盟时，采用本地生存周期和对端生存周期中较小的一个，不必保证隧道两端设备配置的生存周期相同（sa duration）。
+通过抓包可以看出ISAKMP消息的SA载荷中携带用于协商的IKE安全提议。以消息1为例：
+
+![](../images/53be0fd1143d8.png)
+
+##### 2. 使用DH算法交换密钥材料, 并生成密钥
+网关A和B利用ISAKMP消息的Key Exchange和nonce载荷交换彼此的密钥材料。Key Exchange用于交换DH公开值，nonce用于传送临时随机数。由于DH算法中IKE Peer双方只交换密钥材料，并不交换真正的共享密钥，所以即使黑客窃取了DH值和临时值也无法计算出共享密钥，这一点正是DH算法的精髓所在。从抓包中可以看到IKE Peer双方交换密钥材料，以消息3为例：
+
+
+![](../images/53be0feca2c34.png)
+
+密钥材料交换完成后, IKE Peer双方结合自身配置的身份验证方法各自开始复杂的密钥计算过程(预共享密钥或数字证书都会参与到密钥计算过程中), 最终会产生三个密钥:
+- SKEYID_a：ISAKMP消息完整性验证密钥――谁也别想篡改ISAKMP消息了，只要消息稍有改动，响应端完整性检查就会发现！
+- SKEYID_e：ISAKMP消息加密密钥――再也别想窃取ISAKMP消息了，窃取了也看不懂！
+
+**以上两个密钥保证了后续交换的ISAKMP信息的安全性!**
+
+- SKEYID_d：用于衍生出IPSec报文加密和验证密钥――最终是由这个密钥保证IPSec封装的数据报文的安全性！
+
+**整个密钥交换和计算过程在IKE SA超时时间的控制下以一定的周期进行自动刷新, 避免了密钥长期不变带来的安全隐患.**
+
+##### 3. 身份认证
+IKE Peer通过两条ISAKMP消息(5,6)交换身份信息, 进行身份认证. 目前有两种身份认证技术比较常用:
+- 预共享密钥方式(pre-share): 设备的身份信息为ip地址或名称
+- 数字证书方式: 设备的身份信息为证书和通过证书密钥加密的部分信息Hash值(俗称签名)
+
+以上身份信息都由SKEYID_e 进行加密, 所以在抓包中我们只能看到标识为“Encrypted”的ISAKMP消息，看不到消息的内容（身份信息）。以消息5为例：
+
+![](../images/53be100886d43.png)
+
+预共享密钥是最简单、最常用的身份认证方法。这种方式下设备的身份信息可以用IP地址或名称（包括FQDN和USER-FQDN两种形式）来标识。当IKE Peer两端都有固定IP地址的时候，一般都用IP地址作为身份标识；当一端为动态获取IP地址的时候，没有固定IP地址的一端只能用名称来标识。本篇强叔给大家展示的案例为前者，后者晚些再讲。
+
+**这里有个小问题提醒大家关注：**
+
+总舵收到分舵1发来的身份信息后，需要用密钥（SKEYID_a和SKEYID_e）进行完整性验证和解密，只有先找到正确的预共享密钥才能计算出这两个密钥。但总舵网关为每个IKE Peer都配置了一个预共享密钥。怎么找呢？此时只能根据IKE Peer发来的ISAKMP报文的源IP地址（src）来查找预共享密钥，只要报文源地址与本端IKE Peer视图下remote-address命令配置的IP地址一致，就认为该视图下配置的pre-shared-key是分舵1的预共享密钥。
+
+以上是IPSec协议内部处理过程，不需要大家操心。**大家只要记住在IKE Peer两端都有固定IP地址的场景下，remote-address命令配置的IP地址要跟对端发起IKE协商的IP地址保持一致即可。这个IP地址的作用不仅仅是指定了隧道对端的IP地址，还参与了预共享密钥的查找。**
+
+阶段1协商完成后，进入阶段2。
+
+#### 阶段2-建立IPSec SA
+在阶段2中IKEv1采用快速交换模式通过3条ISAKMP消息建立IPSec SA。由于快速交换模式使用IKEv1阶段1中生成的密钥SKEYID_e对ISAKMP消息进行加密，所以我们抓到的报文都是加密的，看不到载荷里面的具体内容。故下面只能文字介绍一下每一步的作用。
+
+下面以网关A发起IPSec协商为例进行讲解
+
+![](../images/53be102678e7c.png)
+
+![](../images/53be103326b07.png)
+
+1. **发起方发送IPSec安全提议、被保护的数据流（ACL）和密钥材料给响应方**。
+2. **响应方回应匹配的IPSec安全提议、被保护的数据流，同时双方生成用于IPSec SA的密钥**。
+
+    IPSec对等体两端协商IPSec安全提议的过程跟协商IKE安全提议的过程类似，不再赘述。
+
+    **IKEv1不协商ACL规则，建议两端设备配置的ACL规则互为镜像，避免IPSec SA协商失败。**
+
+    IPSec对等体两端交换密钥材料（SKEYID_d、SPI和协议1、nonce等参数），然后各自进行密钥计算生成用于IPSec SA加密验证的密钥，这样可以保证每个IPSec SA都有自己独一无二的密钥。由于IPSec SA的密钥都是由SKEYID_d衍生的，一旦SKEYID_d泄露将可能导致IPSec VPN受到侵犯。为提升密钥管理的安全性，**IKE提供了PFS（完美向前保密）功能**。启用PFS后，在进行IPSec SA协商时会进行一次附加的DH交换，重新生成新的IPSec SA密钥，提高了IPSec SA的安全性。
+
+    说明：1、协议指AH和/或ESP协议。
+
+3. **发起方发送确认结果**。
+
+    协商完成发送方开始发送IPSec(ESP)报文
+
+    ![](../images/53be104bde8d6.png)
+
+    检查IPSec VPN状态信息
+
+    以总舵显示信息为例:
+    - 在总舵和分舵上查看IKE SA的建立情况。
+        ```bash
+        <FW_A> display ike sa
+        current ike sa number: 2
+        ---------------------------------------------------------------------
+        conn-id    peer                    flag          phase vpn
+        ---------------------------------------------------------------------
+        40129      2.2.3.2                 RD|ST         v1:2  public
+        40121      2.2.3.2                 RD|ST         v1:1  public
+        ```
+        这里统一显示了IKE SA（v1:1）和IPSec SA（v1:2）的状态，RD表示SA状态为READY。IKE Peer之间只有一个IKE SA，IKE SA是双向逻辑连接（不区分源和目的）。
+    - 在总舵和分舵上查看IPSec SA的建立情况
+    
+        ```bash
+        <FW_A> display ipsec sa brief
+        current ipsec sa number: 2
+        current ipsec tunnel number: 1
+        ---------------------------------------------------------------------
+        Src Address     Dst Address     SPI        Protocol  Algorithm
+        ---------------------------------------------------------------------
+        1.1.1.1         2.2.3.2         4090666525 ESP       E:DES;A:HMAC-MD5-96;
+        2.2.3.2         1.1.1.1         2927012373 ESP       E:DES;A:HMAC-MD5-96;
+        ```
+        IPSec SA是单向的（区分源和目的），两个方向的IPSec SA共同组成一条IPSec隧道。
+    
+        **说明：一般来说一条数据流对应一个IPSec SA。但当IPSec同时采用了ESP+AH封装时，一条数据流会对应两个IPSec SA。**
+    - 在总舵和分舵上查看会话表。
+    
+        ```bash
+        <FW_A > display firewall session table
+        11:01:45  2014/07/08
+        Current Total Sessions : 6
+        esp  VPN:public --> public 1.1.1.1:0-->2.2.3.2:0
+        icmp  VPN:public --> public 172.16.2.2:7264-->192.168.0.2:2048
+        icmp  VPN:public --> public 172.16.2.2:7520-->192.168.0.2:2048
+        icmp  VPN:public --> public 172.16.2.2:7776-->192.168.0.2:2048
+        icmp  VPN:public --> public 172.16.2.2:8032-->192.168.0.2:2048
+        icmp  VPN:public --> public 172.16.2.2:8288-->192.168.0.2:2048
+        防火墙会为IPSec VPN建立了会话表（1.1.1.1:0-->2.2.3.2:0）。
+        ```
+**下面简单介绍一下野蛮模式**
+
+配置命令exchange-mode aggressive即可将IKEv1的协商模式改为野蛮模式。抓包看一下野蛮模式的情况：
+
+![](../images/53be106f544ad.png)
+
+野蛮模式只用了3条ISAKMP消息就完成了阶段1的协商过程, 阶段2仍旧是快速模式不变
+
+![](../images/53be108852ab6.png)
+
+发起方和响应方把IKE安全提议、密钥相关信息和身份信息一股脑地全放在一个ISAKMP消息中发送给对方，IKE协商效率提高了。但由于身份信息是明文传输，没有加密和完整性验证过程，IKE SA的安全性降低了。**既然这样不够安全，为什么野蛮模式还会出现？**
+
+在IPSec VPN出现的早期，由于主模式+预共享密钥身份认证方式下，IPSec需要通过对端的IP地址来在本地查找预共享密钥（主模式中已经详细解释了这个问题）。这种密钥查找方式在对端没有固定IP地址的情况下（比如IPSec NAT穿越场景，网络出口动态获取IP地址场景）行不通。此时，野蛮模式可以“野蛮”地解决这个问题。野蛮模式中“身份信息”没有加密，IPSec就直接用对端发送来的身份信息来查找预共享密钥即可。所以在IPSec VPN应用初期，野蛮模式主要用于解决没有固定IP地址的节点部署IPSec VPN的问题。**现在，IPSec VPN解决这个问题有很多方法，不安全的野蛮模式已经不是最好的选择了。**具体方法待后续再呈现给大家
+
+### IKEv2应运而生
+IKEv1似乎已经很完美了, 但用得久了仍旧会发现不尽人意之处
+- 协商建立IPSec SA得时间太长
+
+    - IKEv1主模式协商一对IPSec SA，需要6（协商IKE SA）+3（协商IPSec SA）=9条消息。
+    - IKEv1野蛮模式协商一对IPSec SA，需要3（协商IKE SA）+3（协商IPSec SA）=6条消息。
+- 不支持远程用户接入
+
+    - IKEv1不能对远程用户进行认证。若想支持远程用户接入，只能借助L2TP，通过PPP来对远程用户进行AAA认证。
+
+这些问题怎么解决呢？办法总比问题多！IKEv2中完美的解决了这些问题。
+
+IKEv2相比IKEv1： 
+
+- 协商建立IPSec SA的速度大大提升
+正常情况IKEv2协商一对IPSec SA只需要2（协商IKE SA）+2（协商IPSec SA）=4条消息。后续每建立一对IPSec SA只会增加2条消息。
+- 增加了EAP（Extensible Authentication Protocol）方式的身份认证。
+IKEv2通过EAP协议解决了远程接入用户认证的问题，彻底摆脱了L2TP的牵制。目前IKEv2已经广泛应用于远程接入网络中了。今天强叔只介绍IKEv2的基本协商过程，EAP认证留待后续再讲。
+
+IKEv2的配置思路与IKEv1完全相同，只是细节稍有不同：
+
+![](../images/53be10babb9f8.png)
+
+说明：红色命令与IKEv1不同。缺省情况下，防火墙同时开启IKEv1和IKEv2协议。本端发起协商时，采用IKEv2，接受协商时，同时支持IKEv1和IKEv2。可以不关闭IKEv1。
+
+IKEv2协商IPSec SA的过程跟IKEv1有很大差别
+
+#### 1. 初始交换4条消息同时搞定IKE SA和IPSec SA。
+
+初始交换包括IKE安全联盟初始交换（IKE_SA_INIT交换）和IKE认证交换（IKE_AUTH交换）。
+
+![](../images/53be1121110f3.png)
+
+![](../images/53be10fdbdd35.png)
+
+**第一个消息对（IKE_SA_INIT）**：负责IKE安全联盟参数的协商，包括IKE Proposal，临时随机数（nonce）和DH值。
+
+![](../images/53be1143219d0.png)
+
+SA载荷主要用来协商IKE Proposal。
+
+![](../images/53be115059a99.png)
+
+KE（Key Exchange）载荷和Nonce载荷主要用来交换密钥材料。
+
+![](../images/53be117f71394.png)
+
+IKEv2通过IKE_SA_INIT交换后最终也生成三类密钥：
+- SK_e：用于加密第二个消息对。
+- SK_a：用于第二个消息对的完整性验证。
+- SK_d：用于为Child SA（IPSec SA）衍生出加密材料。
+
+**第二个消息对（IKE_AUTH）**：负责身份认证，并创建第一个Child SA（一对IPSec SA）。
+
+目前三种身份认证技术比较常用：
+
+- 预共享密钥方式（pre-share）：设备的身份信息为IP地址或名称。
+- 数字证书方式：设备的身份信息为证书和通过证书私钥加密的部分消息Hash值（签名）。
+- EAP方式：采用EAP认证的交换过程属于扩展交换的内容，将在后面讲解。
+
+以上身份信息都通过SKEYID_e加密。
+
+创建Child SA时，当然也要协商IPSec安全提议、被保护的数据流。IKEv2通过TS载荷（TSi和TSr）来协商两端设备的ACL规则，最终结果是取双方ACL规则的交集（这点跟IKEv1不同，IKEv1没有TS载荷不协商ACL规则）。
+当一个IKE SA需要创建多对IPSec SA时，例如两个IPSec对等体之间有多条数据流的时候，需要使用创建子SA交换来协商后续的IPSec SA。
+
+
+#### 2. 子SA交换2条消息建立一对IPSec SA。
+
+![](../images/53be119a58a33.png)
+
+子SA交换必须在IKE初始交换完成之后才能进行，交换的发起者可以是IKE初始交换的发起者，也可以是IKE初始交换的响应者。这2条消息由IKE初始交换协商的密钥进行保护。
+
+IKEv2也支持PFS功能，创建子SA交换阶段可以重新进行一次DH交换，生成新的IPSec SA密钥。
+
+
+### IKEv1和IKEv2大PK
+IKEv1和IKEv2的细节写了这么多，现在总结一下二者的异同点吧： 
+
+| 功能项               | IKEv1                                                                                                                                                       | IKEv2                                                    |
+| -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| IpSec SA建立过程     | 分两个阶段, 阶段1分两种模式: 主模式和野蛮欧式, 阶段2为快速模式<br/> 主模式+快速模式需要9条信息建立IPSec SA。<br/>野蛮模式+快速模式需要6条信息建立IPSec SA。 | 不分阶段,最少4条信息即可建立IPSec SA.                    |
+| **ISAKMP**           | 两者支持得载荷类型不同                                                                                                                                      | 两者支持得载荷类型不同                                   |
+| **认证方法**         | 预共享密钥<br/>数字证书<br/>数字信封（较少使用）                                                                                                            | 预共享密钥<br/>数字证书<br/>EAP<br/>数字信封（较少使用） |
+| **IKE SA完整性算法** | 不支持                                                                                                                                                      | 支持                                                     |
+| **PES**              | 支持                                                                                                                                                        | 支持                                                     |
+| **远程接入**         | 通过L2TP over IpSec来实现                                                                                                                                   | 支持                                                     |
+
+显然IKEv2以其更加快捷、更加安全的服务胜出，长江后浪推前浪又成为了没有任何悬念的事实。 
+
+### IPSec协议框架总结
+安全协议(AH和ESP), 加密算啊(DES, 3DES, AES), 验证算法(MD5,SHA1,shA2), IKE, DH,好多的缩写，大家搞清楚他们之间的关系了么？强叔做了一下总结，看看能否帮助大家：
+
+- 安全协议(AH和ESP) -- IP报文的完全封装. 此'马甲'并非一般的马甲, 是**交织了'加密'和'验证'算法的刀枪不入的'软猬甲'**
+
+    ![](../images/543b271b26a0e.png)
+
+   说明：AH封装的验证范围实际要还更大一些，包括新的IP头。
+
+- 加密算法（DES、3DES、AES）――IPSec报文的易容之术。IPSec数据报文采用对称加密算法进行加密，但只有ESP协议支持加密，AH协议不支持。另外，IKE协商报文也会进行加密。
+- 验证（MD5、SHA1、SHA2）――IPSec报文的验明正身之法。加密后的报文经过验证算法处理生成数字签名，数字签名填写在AH和ESP报文头的完整性校验值ICV字段发送给对端；在接收设备中，通过比较数字签名进行数据完整性和真实性验证。
+- IKE――手握密钥管理大权的贴心管家。IPSec使用IKE协议在发送、接收设备之间安全地协商密钥、更新密钥。
+- DH算法――贴心管家的铁算盘。DH被称为公共密钥交换方法，它用于产生密钥材料，并通过ISAKMP消息进行交换，并最终在收发两端计算出加密密钥和验证密钥。
+
+这些概念一一梳理过来，强叔不得不感叹IPSec协议设计者的强大――这么多新的老的协议、算法拼接起来如此天衣无缝，自此Internet的险恶被屏蔽在隧道之外！为了方便大家记忆这些缩写，强叔用一张简图概括之：
+
+![](../images/543b274f94150.png)
+
+## 模板方式IPSec安全策略
+跟IKE方式IPSec安全策略一样，模板方式IPSec安全策略也要依靠IKE协商IPSec隧道。模板方式IPSec安全策略最大的改进就是不要求对端IP地址固定：**可以严格指定对端IP地址（单个IP），可以宽泛指定对端IP地址（IP地址段）也可以干脆不指定对端IP（意味着对端IP可以是任意IP）**。
+
+模板方式IPSec安全策略就好像一员猛将，根本不把对端IP放在眼里，什么固定IP、动态地址、私网IP统统不在话下。只管放马过来，来多少都照单全收。正因为这种大将风范，模板方式IPSec安全策略特别适用于天地会总舵，用于响应众多分舵的协商请求。且分舵数量越多越明显：
+- 采用IKE方式IPSec策略, 总舵需要配置N个IPSec策略, N个IKE对等体. N=分舵数量
+- 采用模板方式IPSec策略. 总舵需要配置1个IPSec策略, 一个IKE对等体. 与N的取值无关
+
+总之, 模板方式IPSec安全策略的两大优点令他在IPSec阵营中始终保持明星地位:
+- 对对端要求甚少, 由固定IP或者没有无所谓
+- 配置简单,只要配置一个IKE Peer即可
+
+但明星也是有缺点的，这个缺点也可以说是模板方式IPSec安全策略“不拘小节”的地方：模**板方式IPSec安全策略只能响应对端发起的协商请求，不能主动发起协商**。
+
+至此强叔已经介绍了三种IPSec安全策略：手工方式IPSec安全策略、IKE方式IPSec安全策略、模板方式IPSec安全策略。**这三种IPSec安全策略都可以配置在一个IPSec安全策略组中**。所谓IPSec安全策略组就是一组名称相同的IPSec安全策略。在一个IPSec安全策略组中最多只能存在一个模板方式IPSec安全策略，且其序号必须最大，即优先级最小。否则接入请求被模板接收了，优先级低的IKE方式IPSec策略则无法施展。切记！
+
+### 分舵接入IP便, 模板接收只等闲
+
+总舵跟分舵1和分舵2之间建立IPSec VPN的组网图如下所示。本图中分舵1和分舵2的出接口采用动态方式获取公网IP地址。要求在分舵1跟总舵、分舵2跟总舵之间建立IPSec隧道，分舵1跟分舵2之间也可以通过IPSec通信。
+
+![](../images/53ce13674dfc5.png)
+
+模板方式IPSec安全策略配置流程如下：
+
+![](../images/53ce137e1868c.png)
+
+分舵2的配置与分舵1类似，请参考分舵1的配置。IKE安全提议和IPSec安全提议采用缺省配置（每个版本的缺省配置可能不同，请配置时注意）。
+
+![](../images/FGMM_SAZ@7SKQ@73Z6CG.png)
+
+部署完成后进行验证：
+1. 在总舵IPSec网关上可以查看到总舵跟分舵1和分舵2都正常建立了第一阶段和第二阶段安全联盟。
+2. 分舵1、分舵2、总舵可以互相通信。
+
+问题：若在接口上应用IPSec策略时不配置auto-neg参数，分舵1跟分舵2可以直接通信吗？
+
+1. 在分舵1和分舵2的网关取消接口上应用的IPSec策略后，重新应用时不配置auto-neg参数。由分舵1的PC2 ping分舵2的PC3，无法ping通。
+2. 查看分舵1上安全联盟的建立情况。
+
+    ```bash
+    <FW_B> display ike sa
+    current ike sa number: 2
+    ---------------------------------------------------------------------
+    conn-id    peer                    flag          phase vpn
+    ---------------------------------------------------------------------
+    40022      1.1.1.1                RD|ST         v2:2  public
+    7           1.1.1.1                RD|ST         v2:1  public
+    ```
+
+分舵1跟总舵之间的安全联盟正常建立。
+
+3. 查看分舵2上安全联盟的建立情况。
+
+    ```bash
+    <FW_C> display ike sa
+    current sa Num :0
+    ```
+**分舵2跟总部之间没有建立安全联盟。原因在于总部配置了模板方式IPSec安全策略，只能响应协商。所以分舵1到总舵的安全联盟正常创建了，而总舵到分舵2的安全联盟没法建立。在分舵1跟分舵2上应用IPSec安全策略时带上auto-neg参数后，IPSec安全联盟自动创建。**由于分舵1到总舵、总舵到分舵2之间的安全联盟都已创建好，所以分舵1跟分舵2可以通信。同样总舵可以ping通分舵。
+模板方式IPSec安全策略与IKE方式IPSec安全策略都需要通过IKE来协商IPSec隧道。协商的过程一样，这里强叔就不多说了。本篇重点讲讲模板方式IPSec安全策略的“特色”之处。
+
+### 模板神功露破绽，个性化接入化圆满（仅USG9000系列防火墙支持）
+IPSec模板中只能引用一个IKE Peer。而一个IKE Peer中只能配置一个预共享密钥，因此所有与之对接的对端都必须配置相同的预共享密钥。于是问题来了，只要有一个IPSec网关的预共享密钥泄露，则所有其他网关的IPSec安全都受到威胁。
+
+那么在总舵跟多个分舵对接的点到多点的组网中，分舵可以配置不同的预共享密钥吗？既然预共享密钥跟密钥生成和身份认证相关，只要把预共享密钥与设备身份挂钩就可以。预共享密钥认证方式下可以采用本地IP地址或设备名称进行身份认证。那通过IP地址来指定预共享密钥或通过设备名称来指定预共享密钥就可以为每个接入对端配置 **“个性化的预共享密钥”**了。
+- 在总舵通过对端IP地址为每个分舵指定个性化预共享密钥
+
+**此方式适用于分舵出口IP地址固定的情况。将总舵在ike peer下面配置的remote-address和pre-shared-key删掉，改为在全局下为每个分舵配置remote-address和pre-shared-key就成，这样既保留模板的先进性，又巧妙规避了模板的局限性。**
+
+![](../images/NEND11GRQ6@4KLA3MW.png)
+
+
+- 在总舵通过对端设备名称指定预共享密钥
+
+    **当分舵出口没有固定IP地址时，可以通过设备名称来标识身份（ike local-name），此时总舵在全局下为每个分舵配置remote-id和pre-shared-key即可。**
+
+
+![](../images/M6KT2%MBWZY7239%XRELT.png)
+
+### IP变化不打紧，域名映射获真身
+分舵用动态IP地址接入的情况，IKE方式IPSec安全策略是否真的束手无策呢？
+强叔闭目打坐通过对数通知识的融会贯通、举一反三，也找到了一个可以帮助IKE方式IPSec安全策略解决问题的方法：对端IP地址不固定，当然也就无法配置remote-address，但总部可以通过其他方式间接获知IP地址，比如通过域名。即总部可以用指定remote-domain代替remote-address；分部配置DNS获得域名和IP地址之间的映射关系，开启DDNS保证映射关系能够实时更新。**当然配置动态域名的方式也适用于模板方式IPSec策略。**
+
+![](../images/Q1NPBE9WBGWP64%ZSKT.png)
+
+此方案的局限在于动态接入方必须有固定域名，另外增加了DNS和DDNS的配置，有点小复杂，所以强叔至今的感受是“不得不用时才会使用”。
+模板方式IPSec安全策略很强大吧？实际场景中，他并不是孤军作战的，只有模板方式IPSec安全策略和IKE方式IPSec安全策略联合作战才能全线告捷：
+
+| 场景                                  | 总舵                                                | 分舵                             |
+| ------------------------------------- | --------------------------------------------------- | -------------------------------- |
+| 总舵IP地址固定+分舵IP地址固定         | IKE方式IPSec策略或模板方式IPSec策略                 | IKE方式IPSec策略                 |
+| 总舵IP地址固定+分舵IP地址动态获取     | IKE方式IPSec策略（指定对端域名）或模板方式IPSec策略 | IKE方式IPSec策略                 |
+| 总舵IP地址动态获取+分舵IP地址动态获取 | IKE方式IPSec策略（指定对端域名）或模板方式IPSec策略 | IKE方式IPSec策略（指定对端域名） |
+
+## PSec遭遇NAT
+但Internet的江湖远非如此平静，天地会又面临新的问题。有的分舵连动态的公网IP都没有，只能先由网络中的NAT设备进行地址转换，然后才能访问Internet，此时分舵能否正常访问总舵？另外，分舵除了访问总舵之外，还有访问Internet的需求，有些分舵在网关上同时配置了IPSec和NAT，两者能否和平共处？
+### IPSec隧道途径NAT设备，NAT穿越力保畅通无阻
+先来看网络中存在NAT设备的情况,如下图所示，分舵网关B的出接口IP是私网地址，必须经过NAT设备进行地址转换，转换为公网IP之后才能与总舵网关A建立IPSec隧道。
+
+![](../images/53d0773176f7f.png)
+
+我们都知道，IPSec是用来保护报文不被修改的，而NAT却专门修改报文的IP地址，看起来两者水火不容，我们来详细分析一下。首先，协商IPSec的过程是由ISAKMP消息完成的，而ISAKMP消息是经过UDP封装的，源和目的端口号均是500，NAT设备可以转换该消息的IP地址和端口，因此ISAKMP消息能够顺利的完成NAT转换，成功协商IPSec安全联盟。但是数据流量是通过AH或ESP协议传输的，在NAT转换过程中存在问题。下面分别看一下AH和ESP报文能否通过NAT设备。
+
+- AH协议
+
+    因为AH对数据进行完整性检查，会对包括IP地址在内的整个IP包进行Hash运算。而NAT会改变IP地址，从而破坏AH的Hash值。因此AH报文无法通过NAT网关。
+
+- ESP协议
+
+    ESP对数据进行完整性检查，不包括外部的IP头，IP地址转换不会破坏ESP的Hash值。但ESP报文中TCP的端口已经加密无法修改，所以对于同时转换端口的NAT来说，ESP没法支持。
+
+为了解决这个问题，必须在建立IPSec隧道的两个网关上同时开启NAT穿越功能（对应命令行**nat traversal**）。**开启NAT穿越功能后，当需要穿越NAT设备时，ESP报文会被封装在一个UDP头中，源和目的端口号均是4500。有了这个UDP头就可以正常进行转换**。
+
+根据NAT设备所处的位置和地址转换功能的不同，我们从下面三个场景来分别介绍：
+
+#### 场景一：NAT转换后的分舵公网地址未知，总舵使用模板方式
+该场景中，NAT设备位于分舵网络之外，分舵网关B接口GE0/0/1的私网IP地址，经过NAT设备转换后变为公网IP地址。由于天地会无从获知经过NAT设备转换后的分舵公网IP地址，也就无法在总舵网关A上明确指定对端分舵的公网地址。因此，总舵网关A必须使用模板方式来配置IPSec，同时总舵和分舵的网关上都要开启NAT穿越功能。
+
+总舵既然使用了模板方式，那就无法主动访问分舵，只能由分舵主动向总舵发起访问。
+
+![](../images/53d0776c24908.png)
+
+总舵和分舵网关的关键配置如下：
+
+![](../images/OSWR7S6HD5JQYAQUVPP.png)
+
+下面以第二种场景为例，分别介绍一下采用IKEv1和IKEv2时是如何进行NAT穿越。
+
+- IKEv1协商穿越大揭秘
+
+    1. 开启NAT穿越时，IKEv1协商第一阶段的前两个消息会发送标识NAT穿越（NAT Traversal，简称NAT-T）能力的Vendor ID载荷（主模式和野蛮模式都是）。用于检查通信双方是否支持NAT-T。
+    
+        ![](../images/53d078030fe20.png)
+
+        当双方都在各自的消息中包含了该载荷时，才会进行相关的NAT-T协商。
+
+    2. 主模式消息3和消息4（野蛮模式消息2和消息3）中发送NAT-D（NAT Discovery）载荷。NAT-D载荷用于探测两个要建立IPSec隧道的网关之间是否存在NAT网关以及NAT网关的位置。
+
+        ![](../images/53d07816c4473.png)
+
+        通过协商双方向对端发送源和目的的IP地址与端口的Hash值，就可以检测到地址和端口在传输过程中是否发生变化。若果协商双方计算出来的Hash值与它收到的Hash值一样，则表示它们之间没有NAT。否则，则说明传输过程中对IP或端口进行了NAT转换。
+    
+        第一个NAT-D载荷为对端IP和端口的Hash值，第二个NAT-D载荷为本端IP和端口的Hash值。
+    3. 发现NAT网关后，后续ISAKMP消息（主模式从消息5、野蛮模式从消息3开始）的端口号转换为4500。
+       ISAKMP报文标识了“Non-ESP Marker”。
+
+       ![](../images/53d0782f16e0e.png)
+    4. 在第二阶段会启用NAT穿越协商。在IKE中增加了两种IPSec报文封装模式：UDP封装隧道模式报文（UDP-Encapsulated-Tunnel）和UDP封装传输模式报文（UDP-Encapsulated-Transport）。通过为ESP报文封装UDP头，当封装后的报文通过NAT设备时，NAT设备对该报文的外层IP头和增加的UDP头进行地址和端口号转换。UDP报文端口号修改为4500。
+
+    ![](../images/53d0784405531.png)
+
+- IKEv2协商穿越大揭秘
+
+    1. 开启NAT穿越后，IKE的发起者和响应者都在IKE_SA_INIT消息对中包含类型为NAT_DETECTION_SOURCE_IP和NAT_DETECTION_DESTINATION_IP的通知载荷。这两个通知载荷用于检测在将要建立IPSec隧道的两个网关之间是否存在NAT，哪个网关位于NAT之后。如果接收到的NAT_DETECTION_SOURCE通知载荷没有匹配数据包IP头中的源IP和端口的Hash值，则说明对端位于NAT网关后面。如果接收到的NAT_DETECTION_DESTINATION_IP通知载荷没有匹配数据包IP头中的目的IP和端口的Hash值，则意味着本端位于NAT网关之后。
+
+    ![](../images/53d07854a8e5b.png)
+
+    2. 检测到NAT网关后，从IKE_AUTH消息对开始ISAKMP报文端口号改为4500。报文标识“Non-ESP Marker”
+
+        ![](../images/53d078618601a.png)
+
+        IKEv2中也使用UDP封装ESP报文，当封装后的报文通过NAT设备时，NAT设备对该报文的外层IP头和增加的UDP头进行地址和端口号转换。UDP报文端口号修改为4500。
+
+        ![](../images/53d0786fed3c9.png)
+
+在第二种场景中，配置完成后PC1可以ping通PC2。在总舵网关A上查看IKE SA和IPSec SA的建立情况：
+```bash
+<FW_A> display ike sa
+current ike sa number: 2
+---------------------------------------------------------------------
+conn-id    peer                    flag          phase vpn
+---------------------------------------------------------------------
+40014      2.2.2.10:264             RD            v1:2  public
+40011      2.2.2.10:264             RD            v1:1  public
+```
+在总舵网关A上查看会话：
+```bash
+<FW_A> display firewall session table
+Current Total Sessions : 2 
+  udp  VPN:public --> public 2.2.2.10:2050-->1.1.1.1:4500
+  udp  VPN:public --> public 2.2.2.10:2054-->1.1.1.1:500
+```
+在分舵网关B上查看会话：
+```bash
+Current Total Sessions : 2
+  udp  VPN:public --> public 172.16.0.1:4500-->1.1.1.1:4500
+  udp  VPN:public --> public 172.16.0.1:500-->1.1.1.1:500   //刚开始协商时端口号还是500
+```
+因为中间NAT设备上配置了源NAT转换，所以分舵网关B上只有分舵到总舵方向的会话，没有总舵到分舵方向的会话。
+
+### IPSec与NAT同处一墙，不同流量泾渭分明
+前面讲了IPSec穿越NAT的情况，当IPSec和NAT同时配置在一台防火墙上时，由于两者处理的流量不同，只要保证两种流量互不干扰，便可相安无事。如下图所示，分舵网关B上同时配置了IPSec和NAT，IPSec用于保护分舵跟总舵通信的流量，NAT处理的是分舵访问Internet的流量。
+
+![](../images/53d077be1bc1a.png)
+
+按理说两种流量应该是泾渭分明，互不相干。其实不然，在防火墙处理流程中，NAT在上游，IPSec在下游，所以IPSec流量难免会受到NAT的干扰。IPSec流量一旦命中NAT策略就会进行NAT转换，转换后的流量不会匹配IPSec中的ACL，也就不会进行IPSec处理。
+
+解决这个问题的方法就是在NAT策略中配置一条针对IPSec流量不进行地址转换的策略，该策略的优先级要高于其他的策略，并且该策略中定义的流量范围是其他策略的子集。这样的话，IPSec流量会先命中不进行NAT转换的策略，地址不会被转换，也就不会影响下面IPSec环节的处理，而需要进行NAT处理的流量也可以命中其他策略正常转换。
+
+NAT策略的配置如下：
+```bash
+nat-policy interzone trust untrust outbound                                         
+policy 0   //需要IPSec保护的流量不进行NAT转换
+ action no-nat
+ policy source 172.16.1.0 mask 24
+ policy destination 192.168.0.0 mask 24
+policy 5     //访问Internet的流量进行NAT转换
+action source-nat                                                             
+policy source 172.16.1.0 mask 24                                               
+address-group 1
+```
+若分舵网关B上还配置了NAT Server，配置NAT Server时生成的反向Server-map表也干扰IPSec流量。分舵中的服务器访问总舵时，流量会命中反向Server-map表，然后进行地址转换，转换后的流量不会匹配IPSec中的ACL，也就不会进行IPSec处理。
+
+## IPSec引入数字证书
+在前面两篇贴子中，天地会总舵和分舵的网关进行身份认证时都是使用预共享密钥方式。单从配置过程来说，该方式配置简单，只需在总舵和分舵的网关上配置相同的密钥即可。但随着分舵数量越来越多，总舵和每个分舵之间形成的对等体都要配置预共享密钥。如果所有对等体都使用同一个密钥，存在安全风险；而每个对等体都使用不同的密钥，又不便于管理和维护。
+
+分舵数量日益增长，天地会亟需一个新的身份信息认证方案来代替预共享密钥方式，降低管理成本。既然天地会的总舵和分舵都是以合法生意（如当铺和票号）作为掩护，不如直接向官府的刑部申请为当铺和票号发放身份凭证，标明当铺和票号的身份信息。因为刑部是公正的、可信赖的官府部门，所以盖着刑部大印的身份凭证也就是可信任的，总舵和分舵就可以直接通过身份凭证来验证双方的身份。
+
+这个身份凭证就叫做数字证书，简称证书，是由第三方机构颁发的代表设备身份信息的“身份证”。通过引入证书机制，总舵和分舵可以简单便捷地进行身份认证。在详细介绍证书的实现原理和获取方法之前，我们先来了解一下公钥密码学和PKI框架的知识。
+
+### 公钥密码学公私分明，PKI框架深不可测
+在Internet危机四伏，IPSec闪亮登场一篇中，我们提到过对称密码学，即总舵和分舵使用相同的密钥来加密和解密。与之对应的是非对称密码学，即加密和解密数据使用不同的密钥，也叫做公钥密码学。目前较常用的公钥密码学算法有RSA（Ron Rivest、Adi Shamirh、LenAdleman）和DSA（Digital Signature Algorithm）。
+
+公钥密码学中使用了两个不同的密钥：一个可对外界公开的密钥称为“公钥”；只有所有者知道的密钥称为“私钥”。这一对密钥的特点是，使用公钥加密的信息只能用相应的私钥解密，反之使用私钥加密的信息也只能用相应的公钥解密。
+
+利用公钥和私钥的这个特点，就可以实现通信双方的身份认证。例如，某个分舵网关使用自己的私钥对信息进行加密（数字签名），而总舵网关使用分舵网关对外公开的公钥进行解密。因为其他人没有该分舵网关的私钥，所以只要总舵使用对应的公钥可以解密信息就确定信息是由该分舵发出来的，从而实现身份认证功能。
+
+了解公钥密码学的基本概念后，如何在实际环境中应用公钥密码学理论呢？PKI（Public Key Infrastructure）正是一个基于公钥密码学理论来实现信息安全服务的基础框架，数字证书是其核心组成部分，而IKE借用了PKI中的证书机制来进行对等体的身份认证。
+
+PKI框架中包括以下两个重要角色：
+- 终端实体（EE，End Entity）：证书的最终使用者，例如总舵和分舵的网关。
+- 证书颁发机构（CA，Certificate Authority）：是一个权威的、可信任的第三方机构（类似刑部），负责证书颁发、查询以及更新等工作。
+
+通常情况下，终端实体生成公私密钥对，并将公钥、实体信息发送给CA进行证书申请。CA审核实体身份，根据实体的公钥和实体信息制作证书，然后为实体颁发证书。通过这一过程，总舵和分舵网关就可以从CA获取到代表自己身份的证书。
+
+CA生成的证书中包含了大量的信息，我们来看一个常见的证书结构：
+
+![](../images/53d9ec44d6340.png)
+
+图中各个字段的简要解释如下:
+- 版本:即使用X.509的版本，目前普遍使用的是v3版本（0x2）。
+- 序列号：该序列号在CA服务范围内唯一。
+- 签名算法：CA签名使用的算法。
+- 颁发者：CA的名称。
+- 有效期：包含有效的起、止日期，不在有效期范围的证书为无效证书。
+- 主题：证书所有者的名称。
+- 公钥信息：对外公开的公钥。
+- 扩展信息：通常包含了使用者备用名称、使用者密钥标识符等可选字段。
+- 签名：CA的签名信息，又叫CA的指纹信息。
+
+本篇中所提到的证书分为两种类型：网关自身的证书称为本地证书，代表网关的身份；而CA“自签名”的证书称为CA证书，又叫根证书，代表了CA的身份。
+
+上面简单介绍了证书涉及的几个重要概念，大家先有一个初步了解，关于公钥密码学和PKI框架的详细介绍后续会给出。下面我们来看一下如何为总舵和分舵的网关获取到证书。
+
+### 证书重要取之有道，在线离线灵活选择
+PKI框架中的CA用来处理证书的申请、颁发业务，总舵和分舵的网关可以通过下面两种方式从CA获取证书：
+- 在线方式（带内方式）
+
+    网关和CA通过证书申请协议交互报文，在线申请证书，申请到的证书直接保存到网关的存储设备中（Flash或CF卡），常用的证书申请协议有SCEP（Simple Certification Enrollment Protocol）和CMP（Certificate Management Protocol）。该方式适用于网关支持SCEP或CMP的情况，同时依赖于网关与CA之间网络的连通状态。
+- 离线方式（带外方式）
+首先，网关生成证书请求文件，我们将该文件通过磁盘、电子邮件等方式将该文件发送给CA。然后，CA根据证书请求文件为网关制作证书，同样通过磁盘、电子邮件等方式将证书返回。最后，我们将证书上传到网关的存储设备中。该方式适用于网关不支持SCEP或CMP的情况，或者网关与CA之间无法通过网络互访的情况。
+
+上述两种方式可根据网关的实际情况灵活选择。下面以离线方式为例，介绍天地会总舵和分舵的网关获取证书的过程。
+
+![](../images/53d9ec53c8f5e.png)
+
+离线方式申请证书的流程如下图所示：
+
+![](../images/53d9ec601d865.png)
+
+1. 创建公私密钥对
+
+    首先, 在网关FWA和FWB上创建各自的公私密钥对，在申请证书时会用到公钥信息。创建过程中，系统会提示输入公钥的位数，位数的长度范围从512到2048。公钥的长度越大，其安全性就越高，但计算速度相对来说比较慢。这里我们要求最高的安全性，所以输入2048。
+
+    在网关FWA上创建公私密钥对：
+    ```bash
+    [FWA] rsa local-key-pair create
+
+    The key name will be: FWA_Host
+
+    The range of public key size is (512 ~ 2048).
+
+    NOTES: If the key modulus is greater than 512,
+
+        It will take a few minutes.
+
+    Input the bits in the modulus[default = 512]:2048
+
+    Generating keys...
+
+    .................................................+++
+
+    ...............................................+++
+
+    ..............++++++++
+
+    .++++++++
+    ```
+    在网关FWB上创建公私密钥对：
+    ```bash
+    [FWB] rsa local-key-pair create
+
+    The key name will be: FWB_Host
+
+    The range of public key size is (512 ~ 2048).
+
+    NOTES: If the key modulus is greater than 512,
+
+        It will take a few minutes.
+
+    Input the bits in the modulus[default = 512]:2048
+
+    Generating keys...
+
+    .................................................+++
+
+    ...............................................+++
+
+    ..............++++++++
+
+    .++++++++
+    ```
+2. 配置实体信息
+
+    申请证书时，网关FWA和FWB必须向CA提供能够证明自己身份的信息，实体信息代表的就是网关的身份信息，包括：通用名称（Common Name）、FQDN（Fully Qualified Domain Name）名称、IP地址、电子邮箱地址等。其中，通用名称是必须配置的，而其他几项是可选配置的。
+
+    上述信息都将会包含在证书中，在IKE对等体中配置ID类型时，就可以根据证书中包含的实体信息来决定使用哪种ID类型来进行认证。
+
+    实体信息配置完成后，还需要在PKI域中引用实体信息。下面给出网关FWA和FWB上实体信息和PKI域的配置情况：
+
+    ![](../images/46MJ9$0AJLM7X7ZVBZ9.png)
+3. 生成证书请求文件
+
+    接下来就可以在网关FWA和FWB上生成证书请求文件，生成的证书请求文件以“PKI域名.req”的名字保存在网关FWA和FWB的存储设备中，FWA生成的证书请求文件名字是**fwa.req**，FWA生成的证书请求文件名字是**fwb.req**。
+
+    ```bash
+    [FWA] pki request-certificate domain fwa pkcs10
+
+    Creating certificate request file...
+
+    Info: Create certificate request file successfully.
+
+    [FWB] pki request-certificate domain fwb pkcs10
+
+    Creating certificate request file...
+
+    Info: Create certificate request file successfully.
+    ```
+    在FWA上查看生成的证书请求文件，可以看到里面包含了上面配置的通用名称、FQDN名称、IP地址和电子邮箱地址，以及FWA的公钥信息。
+    ```bash
+    [FWA] display pki cert-req filename fwa.req
+
+    Certificate Request:                                                           
+
+        Data:                                                                      
+
+            Version: 0 (0x0)                                                       
+
+            Subject: CN=fwa                                                        
+
+            Subject Public Key Info:                                               
+
+                Public Key Algorithm: rsaEncryption                                
+
+                RSA Public Key: (2048 bit)                                         
+
+                    Modulus (2048 bit):                                            
+
+                        00:ae:68:50:18:e7:55:32:7a:0e:61:b6:6e:47:45:              
+
+                        ec:fb:29:d9:1b:4a:9d:6b:b0:00:b0:65:c8:fc:5b:              
+
+                        b4:68:d7:90:7d:96:f7:1d:e4:62:43:06:bc:d0:a3:              
+
+                        5b:b4:fa:30:a3:19:7e:6f:7c:05:6b:47:0c:a2:42:              
+
+                        1b:c4:82:f7:5b:0a:73:a1:0a:8b:00:dd:37:aa:5e:              
+
+                        21:02:56:b2:e6:55:31:08:8f:71:03:13:92:b9:c1:              
+
+                        51:7e:51:04:e2:ca:85:2e:45:97:bb:9a:0e:ed:61:               
+
+                        03:97:d2:1e:44:b2:9f:ff:b9:b1:1d:5d:65:7e:fc:              
+
+                        e6:13:c3:1e:71:81:d0:fe:a0:60:71:a4:8a:40:93:              
+
+                        92:e3:b3:b6:cf:56:f1:30:b2:fc:53:31:bd:9d:6f:              
+
+                        3c:33:1e:4a:a5:6f:83:c7:45:26:8d:c6:9c:84:85:              
+
+                        b5:8f:b9:e3:86:86:59:ad:9b:58:63:a1:3d:7b:81:              
+
+                        d7:43:14:3d:98:4a:a2:cb:82:2c:fa:ca:91:32:b1:              
+
+                        e0:09:de:fa:a8:d6:fc:ea:8e:7e:36:8f:fb:86:31:              
+
+                        1e:bc:5e:01:71:6b:b4:23:86:7b:05:c1:63:7a:f5:              
+
+                        bc:a7:9b:a1:da:ff:4f:26:2d:33:44:06:72:f1:7b:              
+
+                        84:d5:a8:49:1d:be:b4:0e:9c:94:85:34:7b:e5:bb:              
+
+                        8a:49                                                      
+
+                    Exponent: 65537 (0x10001)                                      
+
+            Attributes:                                                             
+
+            Requested Extensions:                                                  
+
+                X509v3 Subject Alternative Name:                                   
+
+                    IP Address:1.1.1.1, DNS:fwa.tdh.com, email:fwa@tdh.com         
+
+        Signature Algorithm: md5WithRSAEncryption                                  
+
+            4b:a6:fc:91:2a:77:e3:30:02:bb:e4:0f:1a:bf:d2:a1:ad:81:                 
+
+            3e:44:51:81:b1:26:2d:2e:83:7c:0c:29:70:3c:6a:8a:7a:1a:                 
+
+            27:c8:a4:8d:3b:8f:dc:a7:d7:df:10:be:4c:96:1f:f5:db:96:                 
+
+            4d:e9:28:82:b9:2d:9b:e6:6d:22:52:ca:50:07:c2:7a:2b:17:                 
+
+            c7:49:7a:a6:a5:7c:cc:82:02:15:14:ca:9c:69:39:eb:fb:44:                  
+
+            3a:c9:75:d9:f5:b6:bf:b1:45:e4:e7:f4:db:df:eb:3d:6b:74:                 
+
+            ac:14:e9:51:af:b1:c8:d6:c1:19:48:bc:27:c1:37:59:41:38:                 
+
+            9c:1f:9a:7e:c7:fe:20:c9:e8:1d:94:55:ff:85:3e:8c:5a:f5:                  
+
+            f3:ff:9b:18:36:b1:25:2b:4d:60:2e:13:7b:be:91:c0:a1:1f:                 
+
+            6c:5c:1a:f6:3a:5b:e7:87:2b:43:7f:d8:f6:2b:c8:b1:df:7d:                 
+
+            c8:40:df:07:f9:52:4c:8b:ba:b0:10:f3:34:00:00:74:0b:ae:                 
+
+            c1:7a:9c:dd:de:26:26:28:30:de:e8:6c:dc:0a:c6:8f:27:27:                 
+
+            c6:0d:5e:8e:68:a8:8d:cc:eb:91:9c:59:3d:1e:f3:f3:58:72:                 
+
+            16:bf:cc:f5:df:71:bc:51:fb:98:83:c5:2b:17:73:d7:0a:6c:                 
+
+            f7:93:76:f4
+    ```
+
+4. CA根据证书请求文件制作证书
+
+    证书请求文件生成后，可以将该文件通过磁盘、电子邮件等方式将该文件发送给CA，由CA为网关FWA和FWB制作证书。除了网关FWA和FWB的证书之外，CA还会提供自身的证书，即CA证书。CA将制作好的FWA和FWB的证书同自身的证书一道通过磁盘、电子邮件等方式返回。
+
+    CA制作证书的过程在此不详细介绍，常用的Windows Server操作系统就可以作为CA来申请和颁发证书。
+5. 导入证书
+
+    经过CA的处理，最终我们获取到了网关FWA的证书fwa.cer，网关FWB的证书fwb.cer，以及CA本身的证书ca.cer。下图展示了网关FWA的证书fwa.cer的内容：
+
+    ![](../images/53d9ec70d8c34.png)
+
+    将fwa.cer和ca.cer上传到FWA的存储设备中，将fwb.cer和ca.cer上传到FWB的存储设备中，然后还需要将证书分别导入到FWA和FWB上。
+
+    在FWA上导入CA证书和本地证书：
+    ```bash
+    [FWA] pki import-certificate ca filename ca.cer
+
+    Info: Import file successfully.
+
+    [FWA] pki import-certificate local filename fwa.cer
+
+    Info: Import file successfully.
+    ```
+    在FWB上导入CA证书和本地证书
+    ```bash
+    [FWB] pki import-certificate ca filename ca.cer
+
+    Info: Import file successfully.
+
+    [FWB] pki import-certificate local filename fwb.cer
+
+    Info: Import file successfully.
+    ```
+### 证书入主对等体，身份认证更便利
+导入证书后，网关FWA和FWB都是有“身份”的设备了，在IKE对等体中引入证书，FWA和FWB就可以通过证书来认证对方的身份。
+
+前面提到过，使用证书进行身份认证时，可以根据证书中包含的实体信息来决定使用哪种ID类型。目前可以在IKE对等体中使用DN（Distinguished Name）、FQDN、User-FQDN和IP四种ID类型。这四种ID类型对应的证书中字段以及FWA和FWB上的取值如下表所示。
+
+| ID类型    | 对应证书中的字段 | FWA的取值                                   | FWB的取值                                   |
+| --------- | ---------------- | ------------------------------------------- | ------------------------------------------- |
+| DN        | Subject          | 本端ID：/CN=fwa<br/>对端ID：/CN=fwb         | 本端ID：/CN=fwb<br/>对端ID：/CN=fwa         |
+| FQDN      | DNS              | 本端ID：fwa.tdh.com<br/>对端ID：fwb.tdh.com | 本端ID：fwb.tdh.com<br/>对端ID：fwa.tdh.com |
+| User-FQDN | email            | 本端ID：fwa@tdh.com<br/>对端ID：fwb@tdh.com | 本端ID：fwb@tdh.com<br/>对端ID：fwa@tdh.com |
+| IP        | IP Address       | 本端ID：1.1.1.1<br/>对端ID：3.3.3.3         | 本端ID：3.3.3.3<br/>对端ID：1.1.1.1         |
+
+下面以ID类型是DN为例，介绍网关FWA和FWB的关键配置：
+
+![](../images/TUQGJ0NGUU3AQ104T1EW.png)
+
+采用证书方式的IKE协商过程与采用预共享密钥方式的IKE协商过程大致相同，不同之处在于采用证书方式时，两端交互身份信息的ISAKMP消息（主模式是第5、6条ISAKMP消息；野蛮模式是第1、2条ISAKMP消息）中多了证书载荷和签名载荷，具体协商过程不再赘述。
+
+## IPSec兼容并济吸纳百家，GRE和L2TP改头换面深藏不漏
+### 分舵通过GRE over IPSec接入总舵
+如下图所示，总舵网关FWA和分舵网关FWB已经建立了GRE隧道，现需要在GRE隧道之外再封装IPSec隧道，对总舵和分舵的通信进行加密保护。
+
+![](../images/53f417dcb47a8.png)
+
+前面我们介绍过，IPSec有两种封装模式：传输模式和隧道模式。IPSec对GRE隧道进行封装时，这两种模式的封装效果也不尽相同。
+- 传输模式
+
+    在传输模式中, AH头或ESP头被插入到新的IP头与GRE头之间
+
+    ![](../images/53f417e817fa7.png)
+
+    传输模式不改变GRE封装后的报文头, IPSec隧道的源和目的地址就是GRE疯转后的源和目的地址
+
+- 隧道模式
+
+    在隧道模式中,AH头或ESP头别插入到新的IP头之前,另外再生成一个新的报文头放到AH头或ESP头之前
+
+    ![](../images/53f417ff815cc.png)
+
+    隧道模式使用新的IPSec报文头来封装经过GRE封装后的消息，封装后的消息共有三个报文头：原始报文头、GRE报文头和IPSec报文头，Internet上的设备根据最外层的IPSec报文头来转发该消息。
+
+    封装GRE报文头时，源和目的地址可以与IPSec报文头中的源和目的地址相同，即使用公网地址来封装；也可以使用私网地址封装GRE报文头，例如，创建Loopback接口并配置私网地址，然后在GRE中借用Loopback接口的地址来封装。
+
+在GRE over IPSec中，无论IPSec采用传输模式还是隧道模式，都可以保护两个网络之间通信的消息。这是因为GRE已经进行了一次封装，原始报文就可以是两个网络之间的报文。
+
+**注意：隧道模式与传输模式相比多增加了新的IPSec报文头，导致报文长度更长，更容易导致分片。如果网络环境要求报文不能分片，推荐使用传输模式。**
+
+下面以隧道模式下ESP封装为例，来对总舵和分舵之间的GRE隧道进行加密保护。首先给出总舵网关FWA和分舵网关FWB的关键配置。 
