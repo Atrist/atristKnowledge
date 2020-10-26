@@ -818,6 +818,6 @@ TSM单点登录的基本配置过程如下，具体参见“NGFW与Controller配
 
 5. 配置default认证域的新用户选项。
 
-6. 执行user-manage online-user aging-time命令将老化时间设置（缺省30分钟）的长一些，避免用户在Controller下线前就在NGFW先下线。
+6. 执行`user-manage online-user aging-time`命令将老化时间设置（缺省30分钟）的长一些，避免用户在Controller下线前就在NGFW先下线。
 
 至此NGFW支持的各种上网认证方式就介绍完了
