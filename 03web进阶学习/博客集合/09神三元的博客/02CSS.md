@@ -237,3 +237,583 @@
 >问题描述: 实现一个div垂直居中, 其距离屏幕左右两边各10px, 其高度始终是宽度的50%。同时div中有一个文字A，文字需要水平垂直居中。
 
 ### 思路一 利用height:0; padding-bottom: 50%;
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+      *{
+        margin: 0;
+        padding: 0;
+      }
+      html, body {
+        height: 100%;
+        width: 100%;
+      }
+      .outer_wrapper {
+        margin: 0 10px;
+        height: 100%;
+        /* flex布局让块垂直居中 */
+        display: flex;
+        align-items: center;
+      }
+      .inner_wrapper{
+        background: red;
+        position: relative;
+        width: 100%;
+        height: 0;
+        padding-bottom: 50%;
+      }
+      .box{
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="outer_wrapper">
+      <div class="inner_wrapper">
+        <div class="box">A</div>
+      </div>
+    </div>
+  </body>
+</html>
+```
+强调两点:
+
+1. padding-bottom 究竟是相对于谁的?
+
+    答案是相对于父元素的`width`值。
+
+    那么对于这个`out_wrapper`的用意就很好理解了。 CSS呈流式布局，div默认宽度填满，即100%大小，给out_wrapper设置margin: 0 10px;相当于让左右分别减少了10px。
+
+2. 父元素相对定位, 那绝对定位下的子元素宽高若设为百分比，是相对谁而言的？
+
+    相对于父元素的( content + padding ) 值,  注意不含border
+
+    延伸：如果子元素不是绝对定位，那宽高设为百分比是相对于父元素的宽高，标准盒模型下是content, IE盒模型是content+padding+border。
+
+### 思路二: 利用calc和vw
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+      }
+
+      .wrapper {
+        position: relative;
+        width: 100%;
+        height: 100%;
+      }
+
+      .box {
+        margin-left: 10px;
+        /* vw是视口的宽度， 1vw代表1%的视口宽度 */
+        width: calc(100vw - 20px);
+        /* 宽度的一半 */
+        height: calc(50vw - 10px);
+        position: absolute;
+        background: red;
+        /* 下面两行让块垂直居中 */
+        top: 50%;
+        transform: translateY(-50%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrapper">
+      <div class="box">A</div>
+    </div>
+  </body>
+</html>
+```
+效果如下:
+
+![](./images/res.gif)
+
+## CSS如何进行品字布局？
+### 第一种
+```html
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <title>品字布局</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      overflow: hidden;
+    }
+    div {
+      margin: auto 0;
+      width: 100px;
+      height: 100px;
+      background: red;
+      font-size: 40px;
+      line-height: 100px;
+      color: #fff;
+      text-align: center;
+    }
+
+    .div1 {
+      margin: 100px auto 0;
+    }
+
+    .div2 {
+      margin-left: 50%;
+      background: green;
+      float: left;
+      transform: translateX(-100%);
+    }
+
+    .div3 {
+      background: blue;
+      float: left;
+      transform: translateX(-100%);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="div1">1</div>
+  <div class="div2">2</div>
+  <div class="div3">3</div>
+</body>
+
+</html>
+```
+
+
+解释点:
+1. margin 为 三个值时, 第一个值应用于**上边**，第二个值应用于**右边和左边**，第三个则应用于**下边**的外边距。
+2. `margin-left:50%`  相对最近块元素的宽度 
+3. `transform: translateX(-100%);` 向 左 偏移 元素本身宽度
+
+### 2. 第二种(全屏版) 
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>品字布局</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      div {
+        width: 100%;
+        height: 100px;
+        background: red;
+        font-size: 40px;
+        line-height: 100px;
+        color: #fff;
+        text-align: center;
+      }
+
+      .div1 {
+        margin: 0 auto 0;
+      }
+
+      .div2 {
+        background: green;
+        float: left;
+        width: 50%;
+      }
+
+      .div3 {
+        background: blue;
+        float: left;
+        width: 50%;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="div1">1</div>
+    <div class="div2">2</div>
+    <div class="div3">3</div>
+  </body>
+</html>
+```
+1. 使用 float 布局, 使得 div 并列一起
+
+
+## CSS如何进行圣杯布局
+
+圣杯布局如图:
+
+![](./images/show.jpg)
+
+### 1. 利用 flex 布局
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    .header,.footer{
+        height:40px;
+        width:100%;
+        background:red;
+    }
+    .container{
+        display: flex;
+    }
+    .middle{
+        flex: 1;
+        background:yellow;
+    }
+    .left{
+        width:200px;
+        background:pink;
+    }
+    .right{
+        background: aqua;
+        width:300px;
+    }
+	</style>
+</head>
+<body>
+    <div class="header">这里是头部</div>
+    <div class="container">
+        <div class="left">左边</div>
+        <div class="middle">中间部分</div>
+        <div class="right">右边</div>
+    </div>
+    <div class="footer">这里是底部</div>
+</body>
+</html>
+```
+
+### 2.float布局(全部float:left)
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    .header,
+    .footer {
+      height: 40px;
+      width: 100%;
+      background: red;
+    }
+
+    .footer {
+      clear: both;
+    }
+
+    .container {
+      padding-left: 200px;
+      padding-right: 250px;
+    }
+
+    .container div {
+      position: relative;
+      float: left;
+    }
+
+    .middle {
+      width: 100%;
+      background: yellow;
+    }
+
+    .left {
+      width: 200px;
+      background: pink;
+      margin-left: -100%;
+      left: -200px;
+    }
+
+    .right {
+      width: 250px;
+      background: aqua;
+      margin-left: -250px;
+      left: 250px; 
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">这里是头部</div>
+  <div class="container">
+    <div class="middle">中间部分</div>
+    <div class="left">左边</div>
+    <div class="right">右边</div>
+  </div>
+  <div class="footer">这里是底部</div>
+</body>
+
+</html>
+```
+这种float布局是最难理解的，主要是浮动后的负margin操作，这里重点强调一下。
+
+设置负margin和left值之前是这样子:
+
+![](./images/1.jpg)
+
+左边的盒子设置margin-left: -100%是将盒子拉上去，效果:
+```css
+.left{
+  /* ... */
+  margin-left: -100%;
+}
+```
+
+![](./images/2.jpg)
+
+然后向左移动200px来填充空下来的padding-left部分
+```css
+.left{
+  /* ... */
+  margin-left: -100%;
+  left: -200px;
+}
+```
+效果呈现:
+
+![](./images/3.jpg)
+
+右边的盒子设置margin-left: -250px后，盒子在该行所占空间为0，因此直接到上面的middle块中,效果:
+```css
+.right{
+  /* ... */
+  margin-left: -250px;
+}
+```
+![](./images/4.jpg)
+
+然后向右移动250px, 填充父容器的padding-right部分:
+```css
+.right{
+  /* ... */
+  margin-left: -250px;
+  left: 250px;
+}
+```
+![](./images/show.jpg)
+
+### 3.float布局(左边float: left, 右边float: right)
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    .header,
+    .footer {
+      height: 40px;
+      width: 100%;
+      background: red;
+    }
+    .container{
+      overflow: hidden;
+    }
+
+    .middle {
+      background: yellow;
+    }
+
+    .left {
+      float: left;
+      width: 200px;
+      background: pink;
+    }
+
+    .right {
+      float: right;
+      width: 250px;
+      background: aqua;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">这里是头部</div>
+  <div class="container">
+    <div class="left">左边</div>
+    <div class="right">右边</div>
+    <div class="middle">中间部分</div>
+  </div>
+  <div class="footer">这里是底部</div>
+</body>
+
+</html>
+```
+### 4. 绝对定位
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    *{
+      margin: 0;
+      padding: 0;
+    }
+    .header,
+    .footer {
+      height: 40px;
+      width: 100%;
+      background: red;
+    }
+    .container{
+      min-height: 1.2em;
+      position: relative;
+    }
+
+    .container>div {
+      position: absolute;
+    }
+
+    .middle {
+      left: 200px;
+      right: 250px;
+      background: yellow;
+    }
+
+    .left {
+      left: 0;
+      width: 200px;
+      background: pink;
+    }
+
+    .right {
+      right: 0;
+      width: 250px;
+      background: aqua;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">这里是头部</div>
+  <div class="container">
+    <div class="left">左边</div>
+    <div class="right">右边</div>
+    <div class="middle">中间部分</div>
+  </div>
+  <div class="footer">这里是底部</div>
+</body>
+
+</html>
+```
+### 5.grid布局
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+  <style>
+    body{
+        display: grid;
+    }
+    #header{
+        background: red;
+        grid-row:1;
+        grid-column:1/5;
+    }
+        
+    #left{
+        grid-row:2;
+        grid-column:1/2;
+        background: orange;
+    }
+    #right{
+        grid-row:2;
+        grid-column:4/5;
+        background: cadetblue;
+    }
+    #middle{
+        grid-row:2;
+        grid-column:2/4;
+        background: rebeccapurple
+    }
+    #footer{
+        background: gold;
+        grid-row:3;
+        grid-column:1/5;
+    }
+  </style>
+</head>
+
+<body>
+    <div id="header">header</div>
+    <div id="left">left</div>
+    <div id="middle">middle</div>
+    <div id="right">right</div>     
+    <div id="footer">footer</footer></div>
+       
+</body>
+
+</html>
+   
+```
+看看grid布局，其实也挺简单的吧，里面的参数应该不言而喻了。
+
+另外说一点，到2019年为止，grid现在绝大多数浏览器已经可以兼容了，可以着手使用了。
+
+![](./images/grid.jpg)
+
+当然，还有table布局，年代比较久远了，而且对SEO不友好，知道就可以，这里就不浪费篇幅了。
