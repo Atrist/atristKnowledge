@@ -51,7 +51,7 @@ Node.js 模块机制采用了 `Commonjs` 规范，弥补了当前 `JavaScript` �
 
 require 模块加载时序图:
 
-![](../image/5caa00510001e43408210581.jpg)
+![](../images/5caa00510001e43408210581.jpg)
 
 ## 模块缓存在哪
 
@@ -80,5 +80,84 @@ console.log(require.cache)
 
 在这个文件里加载 `test-module.js` 文件，在之后打印下 `require.cache` 看下里面返回的是什么？看到以下结果应该就很清晰了，模块的文件名、地址、导出数据都很清楚。
 
-![](../image/test-module.png)
+![](../images/test-module.png)
 
+
+## 模块循环引用
+### 问题1
+
+>假设有 a.js、b.js 两个模块相互引用，会有什么问题？是否为陷入死循环？看以下例子
+```js
+// a.js
+console.log('a模块start');
+
+exports.test = 1;
+
+undeclaredVariable = 'a模块未声明变量'
+
+const b = require('./b');
+
+console.log('a模块加载完毕: b.test值：',b.test);
+```
+```js
+// b.js
+console.log('b模块start');
+
+exports.test = 2;
+
+const a = require('./a');
+
+console.log('undeclaredVariable: ', undeclaredVariable);
+
+console.log('b模块加载完毕: a.test值：', a.test);
+```
+
+### 问题2
+
+>a 模块中的 undeclaredVariable 变量在 b.js 中是否会被打印？
+
+控制台执行`node a.js`，查看输出结果：
+```bash
+a模块start
+b模块start
+undeclaredVariable:  a模块未声明变量
+b模块加载完毕: a.test值： 1
+a模块加载完毕: b.test值： 2
+```
+问题1，启动 `a.js` 的时候，会加载 `b.js`，那么在 `b.js` 中又加载了 `a.js`，但是此时 `a.js` 模块还没有执行完，返回的是一个 `a.js` 模块的 `exports` 对象 未完成的副本 给到 `b.js` 模块（因此是不会陷入死循环的）。然后 b.js 完成加载之后将 `exports` 对象提供给了 `a.js` 模块
+
+问题2，因为 `undeclaredVariable` 是一个未声明的变量，也就是一个挂在全局的变量，那么在其他地方当然是可以拿到的。
+
+在执行代码之前，`Node.js` 会使用一个代码封装器进行封装，例如下面所示：
+```js
+(function(exports, require, module, __filename, __dirname) {
+// 模块的代码
+});
+```
+
+## 对象引用关系考察
+也许是面试考察最多的问题：`module.exports` 与 `exports` 的区别？
+
+`exports` 相当于 `module.exports` 的快捷方式如下所示:
+```js
+const exports = modules.exports;
+```
+但是要注意不能改变 `exports` 的指向，我们可以通过 `exports.test = 'a'` 这样来导出一个对象, 但是不能向下面示例直接赋值，这样会改变 `exports` 的指向
+```js
+// 错误的写法 将会得到 undefined
+exports = {
+  'a': 1,
+  'b': 2
+}
+
+// 正确的写法
+modules.exports = {
+  'a': 1,
+  'b': 2
+}
+```
+更好的理解之间的关系，可以参考 [JavaScript中的对象引用](https://www.nodejs.red/#/javascript/object?id=%e5%af%b9%e8%b1%a1%e5%bc%95%e7%94%a8%e4%bc%a0%e9%80%92)
+
+## 推荐阅读
+- [Node.js 中文网 modules](http://nodejs.cn/api/modules.html#modules_modules)
+- [结合源码分析 Node.js 模块加载与运行原理](https://zhuanlan.zhihu.com/p/35238127)
