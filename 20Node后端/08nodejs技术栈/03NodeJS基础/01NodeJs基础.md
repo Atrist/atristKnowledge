@@ -17,7 +17,7 @@
 - Node.js 技术栈学习指南路线图
 
 ## 背景介绍
-Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine. 这是来自 Node.js 官网 https://nodejs.org/en/ 的一段介绍，翻译成中文意为 Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。这里重点几个关键词 **V8****、JavaScript** 后续会讲解，从这里可以看出 Node.js 并不是一门新的编程语言，做为初学者这点先要弄清楚，它是 JavaScript 的运行环境，更进一步的说是在**服务端的运行环境**，因此这里的编程语言指的是 JavaScript。
+Node.js® is a JavaScript runtime built on Chrome's V8 JavaScript engine. 这是来自 Node.js 官网 https://nodejs.org/en/ 的一段介绍，翻译成中文意为 Node.js 是一个基于 Chrome V8 引擎的 JavaScript 运行环境。这里重点几个关键词 **V8**、**JavaScript** 后续会讲解，从这里可以看出 Node.js 并不是一门新的编程语言，做为初学者这点先要弄清楚，它是 JavaScript 的运行环境，更进一步的说是在**服务端的运行环境**，因此这里的编程语言指的是 JavaScript。
 
 时间回归到 2009 年，在当时 JavaScript 还是一个跑在浏览器环境里的一门脚本语言，当时的笔者还是一名高中生，接触的编程语言是 VB 并不知 JavaScript 为何物，但随后接触 JavaScript 之后了解到这之前用它可以写一些浏览器脚本，做一些动态特效，主要用于前端页面交互。在 2009 这一时间线之后 Javascript 不只运行于浏览器，还可以运行于服务端，简直打通了前端与后端的任督二脉，当然这要归功于 Node.js 之父 Ryan Dahl。一度认为这是很伟大的，在众多编程语言里，为什么会选择 JavaScript 呢？且看下面介绍。
 
