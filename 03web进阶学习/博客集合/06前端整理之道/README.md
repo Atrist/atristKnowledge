@@ -1,0 +1,2 @@
+[【整理】前端优化得有个好手段，比如看这个清单 🍑🍒🍓🍆🌽](https://github.com/vue3/vue3-News/issues/8?content_source_url=https://github.com/vue3/vue3-News)
+[【整理】前端学习笔记总结清单，应有尽有 🍇🍈🍉🍊🍋](https://github.com/vue3/vue3-News/issues/7?content_source_url=https://github.com/vue3/vue3-News)
